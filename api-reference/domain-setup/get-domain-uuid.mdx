@@ -1,0 +1,50 @@
+---
+title: 'Get Domain UUID'
+openapi: 'POST /v1/api/get_domain_uuid'
+---
+
+Retrieve the UUID for a specific domain by providing the domain name and protocol type.
+
+## Example request
+
+<RequestExample>
+
+```bash
+curl -X POST https://api.hookpulse.io/v1/api/get_domain_uuid/ \
+  -H "x-hookpulse-api-key: {{x-hookpulse-api-key}}" \
+  -H "x-brand-uuid: {{x-brand-uuid}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "domain_name": "{{domain_name}}",
+    "protocol_type": "{{protocol_type}}"
+  }'
+```
+
+</RequestExample>
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `domain_name` | string | Yes | Domain name to look up (e.g., "api.hookpulse.io") |
+| `protocol_type` | string | Yes | Protocol type for the domain (e.g., "https", "http") |
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "success": true,
+  "domain_uuid": "{{domain_uuid}}"
+}
+```
+
+</ResponseExample>
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `domain_uuid` | string | Unique identifier for the domain |

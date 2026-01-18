@@ -1,0 +1,81 @@
+---
+title: 'Get Domains (Paginated)'
+openapi: 'GET /v1/api/get_domain_paginated'
+---
+
+Retrieve a paginated list of domains from your HookPulse account.
+
+## Example request
+
+<RequestExample>
+
+```bash
+curl -X GET "https://api.hookpulse.io/v1/api/get_domain_paginated/?page={{page}}" \
+  -H "x-hookpulse-api-key: {{x-hookpulse-api-key}}" \
+  -H "x-brand-uuid: {{x-brand-uuid}}" \
+  -H "Content-Type: application/json"
+```
+
+</RequestExample>
+
+## Query parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | integer | Yes | Page number to retrieve (starts from 1) |
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "data": [
+    {
+      "protocol_type": "{{protocol_type}}",
+      "rate_limit_enabled": {{rate_limit_enabled}},
+      "concurrency_control_enabled": {{concurrency_control_enabled}},
+      "max_concurrent_jobs": {{max_concurrent_jobs}},
+      "max_requests_per_second": {{max_requests_per_second}},
+      "domain_uuid": "{{domain_uuid}}",
+      "domain_name": "{{domain_name}}"
+    }
+  ],
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
+  },
+  "success": true
+}
+```
+
+</ResponseExample>
+
+## Response fields
+
+### Data array
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `protocol_type` | string | Protocol type for the domain |
+| `rate_limit_enabled` | boolean | Whether rate limiting is enabled |
+| `concurrency_control_enabled` | boolean | Whether concurrency control is enabled |
+| `max_concurrent_jobs` | integer | Maximum concurrent jobs allowed |
+| `max_requests_per_second` | integer | Maximum requests per second allowed |
+| `domain_uuid` | string | Unique identifier for the domain |
+| `domain_name` | string | Domain name |
+
+### Meta object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `page` | integer | Current page number |
+| `total_count` | integer | Total number of domains |
+| `per_page` | integer | Number of items per page |
+| `total_pages` | integer | Total number of pages |
+| `has_next` | boolean | Whether there is a next page |
+| `has_prev` | boolean | Whether there is a previous page |

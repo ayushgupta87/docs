@@ -1,4 +1,55 @@
 ---
-title: 'New Plant'
-openapi: 'WEBHOOK /plant/webhook'
+title: 'Webhook Events'
+openapi: 'WEBHOOK /webhook'
 ---
+
+Hookpulse sends webhook events to your configured endpoint when resources are created, updated, or deleted.
+
+## Setup
+
+1. Navigate to your [webhook settings](https://hookpulse.io/signin) in the dashboard
+2. Click "Add Webhook"
+3. Enter your webhook URL
+4. Select the events you want to receive
+5. Save your webhook configuration
+
+## Webhook signature
+
+All webhook requests include a signature header for verification:
+
+```
+X-Hookpulse-Signature: sha256=...
+```
+
+Verify the signature using your webhook secret to ensure the request is from Hookpulse.
+
+## Event types
+
+| Event | Description |
+|-------|-------------|
+| `resource.created` | Triggered when a new resource is created |
+| `resource.updated` | Triggered when a resource is updated |
+| `resource.deleted` | Triggered when a resource is deleted |
+
+## Example payload
+
+<ResponseExample>
+
+```json
+{
+  "event": "resource.created",
+  "data": {
+    "id": "res_1234567890",
+    "name": "My New Resource",
+    "type": "webhook",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
+</ResponseExample>
+
+## Response
+
+Your webhook endpoint should return a `200 OK` status code to acknowledge receipt of the event. Hookpulse will retry failed webhook deliveries up to 3 times with exponential backoff.

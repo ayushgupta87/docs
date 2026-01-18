@@ -1,97 +1,291 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: 'HookPulse Documentation'
+description: 'Enterprise-grade serverless task scheduling infrastructure for modern developers'
 ---
 
-## Setting up
+# HookPulse Overview
 
-Get your documentation site up and running in minutes.
+## What is HookPulse?
+
+**HookPulse** is a production-ready, enterprise-grade serverless task scheduling infrastructure designed for modern developers building AI agents, event-driven systems, and SaaS applications. Built on **Elixir/OTP** for unmatched reliability and performance, HookPulse eliminates the need to build and maintain complex scheduling infrastructure like Celery, Redis, or Sidekiq.
+
+### The Problem We Solve
+
+Building reliable task scheduling infrastructure is hard. Most developers end up:
+- Spending 20+ hours/month maintaining Redis, Celery, or Sidekiq workers
+- Dealing with infrastructure complexity, scaling issues, and reliability concerns
+- Paying high costs for self-hosted solutions (often 95% more expensive)
+- Struggling with timezone handling, precise timing, and concurrency management
+
+**HookPulse solves all of this** with a simple HTTP API that works with any programming language.
+
+---
+
+## Core Capabilities
+
+### 🎯 **Precise Webhook & API Scheduling**
+
+Schedule webhooks and API calls with **millisecond precision** using multiple scheduling strategies:
+
+- **Interval Scheduling**: Run tasks every X seconds, minutes, hours, days, weeks, or months
+- **Cron Scheduling**: Industry-standard cron expressions with IANA timezone support
+- **Solar Scheduling**: Trigger tasks at sunrise/sunset with geographic coordinates
+- **Clocked Scheduling**: One-time scheduled executions at specific dates/times
+
+### 🔄 **Workflow Orchestration**
+
+Build complex, multi-step workflows with conditional execution:
+
+- **Visual Workflow Builder**: Drag-and-drop interface for creating workflows
+- **Payload Transformation**: Transform data between workflow steps
+- **Conditional Logic**: Route execution based on conditions
+- **Template Library**: Reusable workflow templates for common patterns
+- **Workflow Visualization**: Interactive graphs showing data flow and step connections
+
+### 🛡️ **Enterprise-Grade Features**
+
+**Traffic Guard Layer** - Protect your infrastructure:
+
+- **Rate Limiting**: Set max requests per second per project
+- **Concurrency Control**: Limit concurrent executions to prevent overload
+- **FIFO Queues**: Strict First-In-First-Out ordering for critical workflows
+- **Idempotency Keys**: Prevent duplicate executions from network retries
+- **Backpressure Logic**: Automatically pause queues when limits are hit
+
+### 🌍 **Multi-Timezone Support**
+
+- Full **IANA timezone** support (500+ timezones)
+- Automatic timezone conversion for all scheduled times
+- Timezone-aware scheduling for global applications
+
+### 📊 **Real-Time Monitoring & Analytics**
+
+- **Live Concurrency Meter**: Real-time view of concurrent executions
+- **Execution Logs**: Detailed logs with pagination for all executions
+- **Success Rate Tracking**: Monitor execution success rates over time
+- **Performance Metrics**: Latency tracking, retry counts, and response status codes
+
+---
+
+## Why Choose HookPulse?
+
+### 🚀 **Save Development Time**
+
+Stop spending 20+ hours/month maintaining scheduling infrastructure. Focus on building your product instead.
+
+### 💰 **Cost Effective**
+
+95% cheaper than self-hosting. Pay only for what you use with transparent, pay-as-you-go pricing.
+
+### 🔧 **No Infrastructure**
+
+No Redis, no Celery workers, no message queues to manage. Just HTTP API calls.
+
+### 📈 **Scalable**
+
+Built on Elixir/OTP for horizontal scaling. Handles millions of scheduled tasks without breaking a sweat.
+
+### 🎯 **Production Ready**
+
+Enterprise-grade features out of the box: rate limiting, concurrency control, FIFO queues, and idempotency.
+
+### 🌐 **Global Ready**
+
+Multi-timezone support with IANA timezone database. Perfect for global applications.
+
+---
+
+## Use Cases
+
+### 🤖 **AI Agent Orchestration**
+
+Schedule AI agent tasks, coordinate multi-agent workflows, and manage agent execution pipelines with precise timing and conditional logic.
+
+### 📡 **Event-Driven Architectures**
+
+Build event-driven systems with scheduled webhooks, delayed processing, and event coordination across multiple services.
+
+### 🔔 **Notification Systems**
+
+Send scheduled notifications, reminders, and alerts with timezone-aware scheduling and retry logic.
+
+### 📊 **Data Processing Pipelines**
+
+Process data on schedules, coordinate ETL jobs, and manage batch processing workflows.
+
+### 🔄 **API Automation**
+
+Automate API calls, sync data between services, and coordinate third-party integrations.
+
+### 💼 **SaaS Applications**
+
+Add scheduling capabilities to SaaS products without building infrastructure from scratch.
+
+---
+
+## Getting Started
+
+1. **Sign Up**: Create an account at [hookpulse.io](https://hookpulse.io)
+2. **Add a Brand**: Create a brand in your dashboard to get your brand UUID
+3. **Get API Key**: Select your brand and generate an API key from the API Keys section
+4. **Make Your First Request**: Schedule a webhook in under 5 minutes using both credentials
+5. **Build Workflows**: Create complex workflows with our visual builder
+6. **Scale**: Handle millions of scheduled tasks with confidence
+
+---
+
+## Need Help?
+
+For support, questions, or assistance:
+
+- **Email**: [care@hookpulse.io](mailto:care@hookpulse.io)
+- **Phone**: +91 8076445044
+
+Our support team is here to help you succeed with HookPulse.
+
+---
+
+# API Reference
+
+## Overview
+
+Welcome to the HookPulse API reference. This documentation provides detailed information about all available endpoints, request/response formats, and authentication methods.
+
+The HookPulse API is RESTful and uses JSON for request and response payloads. All API requests must be authenticated using custom headers (`x-hookpulse-api-key` and `x-brand-uuid`).
 
 <Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
+  title="OpenAPI Specification"
+  icon="file-code"
+  href="/api-reference/openapi.json"
 >
-  Follow our three step quickstart guide.
+  Download the complete OpenAPI specification file
 </Card>
 
-## Make it yours
+## Base URL
 
-Design a docs site that looks great and empowers your users.
+All API requests should be made to:
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+```
+https://api.hookpulse.io/v1/api
+```
 
-## Create beautiful pages
+## Authentication
 
-Everything you need to create world-class documentation.
+All API endpoints require authentication using two custom headers. Include both headers in every request:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+```bash
+x-hookpulse-api-key: YOUR_API_KEY
+x-brand-uuid: YOUR_BRAND_UUID
+```
 
-## Need inspiration?
+<Warning>
+**Never share these credentials with anyone.** Keep your API key and brand UUID secure. Never expose them in client-side code or commit them to version control. If your credentials are compromised, regenerate them immediately from your dashboard.
+</Warning>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+### Getting your credentials
+
+#### Brand UUID (`x-brand-uuid`)
+
+1. Log in to your [Hookpulse dashboard](https://hookpulse.io/signin)
+2. Add a brand (if you haven't already)
+3. The brand UUID will be displayed in the UI
+4. Copy and securely store your brand UUID
+
+#### API Key (`x-hookpulse-api-key`)
+
+1. Log in to your [Hookpulse dashboard](https://hookpulse.io/signin)
+2. Select your brand from the dashboard
+3. Navigate to **API Keys** section
+4. Click **Create API Key**
+5. Add a node and you will receive your API Key
+6. The API Key will be displayed on the same card - click **View** to see it
+7. Copy and securely store your API key
+
+<Note>
+Both the API key and brand UUID are required for all API requests. Make sure to include both headers in every request.
+</Note>
+
+## Rate limits
+
+API requests are rate-limited to ensure fair usage:
+
+- **Standard tier**: 1000 requests per hour
+- **Pro tier**: 10000 requests per hour
+- **Enterprise**: Custom limits
+
+Rate limit information is included in response headers:
+
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1640995200
+```
+
+## Response format
+
+All API responses follow a consistent format:
+
+### Success response
+
+```json
+{
+  "data": {
+    // Response data here
+  },
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+### Error response
+
+```json
+{
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The request is invalid",
+    "details": {}
+  }
+}
+```
+
+## HTTP status codes
+
+The API uses standard HTTP status codes:
+
+- `200` - Success
+- `201` - Created
+- `204` - No Content
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not Found
+- `429` - Too Many Requests
+- `500` - Internal Server Error
+
+## Pagination
+
+List endpoints support pagination using `limit` and `offset` query parameters:
+
+```bash
+GET https://api.hookpulse.io/v1/api/resources?limit=20&offset=0
+```
+
+Response includes pagination metadata:
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "limit": 20,
+    "offset": 0,
+    "total": 100,
+    "has_more": true
+  }
+}
+```
+
+## Webhooks
+
+Hookpulse supports webhooks for real-time event notifications. See the [webhook documentation](/api-reference/endpoint/webhook) for setup instructions.

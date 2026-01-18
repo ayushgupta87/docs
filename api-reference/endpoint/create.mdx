@@ -1,4 +1,48 @@
 ---
-title: 'Create Plant'
-openapi: 'POST /plants'
+title: 'Create Resource'
+openapi: 'POST /resources'
 ---
+
+Create a new resource in your Hookpulse account.
+
+## Example request
+
+<RequestExample>
+
+```bash
+curl -X POST https://api.hookpulse.io/v1/api/resources \
+  -H "x-hookpulse-api-key: YOUR_API_KEY" \
+  -H "x-brand-uuid: YOUR_BRAND_UUID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My New Resource",
+    "type": "webhook"
+  }'
+```
+
+</RequestExample>
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Name of the resource |
+| `type` | string | No | Type of the resource |
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "id": "res_1234567890",
+    "name": "My New Resource",
+    "type": "webhook",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

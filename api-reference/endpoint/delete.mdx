@@ -1,4 +1,38 @@
 ---
-title: 'Delete Plant'
-openapi: 'DELETE /plants/{id}'
+title: 'Delete Resource'
+openapi: 'DELETE /resources/{id}'
 ---
+
+Delete a resource by its unique identifier.
+
+<Warning>
+This action cannot be undone. The resource will be permanently deleted.
+</Warning>
+
+## Example request
+
+<RequestExample>
+
+```bash
+curl -X DELETE https://api.hookpulse.io/v1/api/resources/res_1234567890 \
+  -H "x-hookpulse-api-key: YOUR_API_KEY" \
+  -H "x-brand-uuid: YOUR_BRAND_UUID"
+```
+
+</RequestExample>
+
+## Path parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | string | Unique identifier of the resource to delete |
+
+## Example response
+
+<ResponseExample>
+
+```json
+// 204 No Content - Resource deleted successfully
+```
+
+</ResponseExample>

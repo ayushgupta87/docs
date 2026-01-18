@@ -1,47 +1,77 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "Hookpulse API",
+    "description": "Complete API documentation for Hookpulse. Build powerful integrations with our RESTful API.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Hookpulse Support",
+      "email": "care@hookpulse.io",
+      "url": "https://hookpulse.io"
+    }
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.hookpulse.io/v1/api",
+      "description": "Production server"
+    },
+    {
+      "url": "https://api.sandbox.hookpulse.io/v1/api",
+      "description": "Sandbox server for testing"
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "apiKeyAuth": [],
+      "brandUuidAuth": []
     }
   ],
   "paths": {
-    "/plants": {
+    "/resources": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "description": "Returns all resources from your Hookpulse account",
         "parameters": [
           {
             "name": "limit",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "Maximum number of results to return (default: 20, max: 100)",
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of results to skip for pagination",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "default": 0
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Resource"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
                   }
                 }
               }
@@ -60,25 +90,30 @@
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "description": "Creates a new resource in your Hookpulse account",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "description": "Resource data to create",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateResource"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "plant response",
+          "201": {
+            "description": "Resource created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Resource"
+                    }
+                  }
                 }
               }
             }
@@ -96,24 +131,23 @@
         }
       }
     },
-    "/plants/{id}": {
+    "/resources/{id}": {
       "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        "description": "Deletes a resource by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID of plant to delete",
+            "description": "Unique identifier of the resource to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "204": {
-            "description": "Plant deleted",
+            "description": "Resource deleted successfully",
             "content": {}
           },
           "400": {
@@ -128,25 +162,141 @@
           }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    },
+    "/v1/api/add_domain": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "description": "Add a new domain to your HookPulse account with rate limiting and concurrency control settings",
         "requestBody": {
-          "description": "Plant added to the store",
+          "description": "Domain configuration",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/AddDomainRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Domain added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddDomainResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_domain_paginated": {
+      "get": {
+        "description": "Retrieve a paginated list of domains from your HookPulse account",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to retrieve (starts from 1)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDomainPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_domain_uuid": {
+      "post": {
+        "description": "Retrieve the UUID for a specific domain by providing the domain name and protocol type",
+        "requestBody": {
+          "description": "Domain lookup request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDomainUuidRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDomainUuidResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "/webhook": {
+      "post": {
+        "description": "Webhook endpoint for receiving real-time events from Hookpulse",
+        "requestBody": {
+          "description": "Webhook event payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook received successfully"
           }
         }
       }
@@ -154,41 +304,96 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "Resource": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the resource",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the resource",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of the resource",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "ISO 8601 timestamp when the resource was created",
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "description": "ISO 8601 timestamp when the resource was last updated",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateResource": {
         "required": [
           "name"
         ],
         "type": "object",
         "properties": {
           "name": {
-            "description": "The name of the plant",
+            "description": "Name of the resource",
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
+          "type": {
+            "description": "Type of the resource",
             "type": "string"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Number of items per page"
           },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
+          "offset": {
+            "type": "integer",
+            "description": "Number of items to skip"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether there are more items available"
           }
-        ]
+        }
+      },
+      "WebhookEvent": {
+        "required": [
+          "event",
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "event": {
+            "description": "Type of event",
+            "type": "string",
+            "enum": ["resource.created", "resource.updated", "resource.deleted"]
+          },
+          "data": {
+            "description": "Event data payload",
+            "type": "object"
+          },
+          "timestamp": {
+            "description": "ISO 8601 timestamp of when the event occurred",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "Error": {
         "required": [
@@ -205,12 +410,180 @@
             "type": "string"
           }
         }
+      },
+      "AddDomainRequest": {
+        "required": [
+          "protocol_type",
+          "domain",
+          "rate_limit_enabled",
+          "concurrency_control_enabled",
+          "max_concurrent_jobs",
+          "max_requests_per_second"
+        ],
+        "type": "object",
+        "properties": {
+          "protocol_type": {
+            "type": "string",
+            "description": "Protocol type for the domain (e.g., 'https', 'http')"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain name to add"
+          },
+          "rate_limit_enabled": {
+            "type": "boolean",
+            "description": "Enable rate limiting for this domain"
+          },
+          "concurrency_control_enabled": {
+            "type": "boolean",
+            "description": "Enable concurrency control for this domain"
+          },
+          "max_concurrent_jobs": {
+            "type": "integer",
+            "description": "Maximum number of concurrent jobs allowed"
+          },
+          "max_requests_per_second": {
+            "type": "integer",
+            "description": "Maximum requests per second allowed"
+          }
+        }
+      },
+      "AddDomainResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message or error details"
+          }
+        }
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "protocol_type": {
+            "type": "string",
+            "description": "Protocol type for the domain"
+          },
+          "rate_limit_enabled": {
+            "type": "boolean",
+            "description": "Whether rate limiting is enabled"
+          },
+          "concurrency_control_enabled": {
+            "type": "boolean",
+            "description": "Whether concurrency control is enabled"
+          },
+          "max_concurrent_jobs": {
+            "type": "integer",
+            "description": "Maximum concurrent jobs allowed"
+          },
+          "max_requests_per_second": {
+            "type": "integer",
+            "description": "Maximum requests per second allowed"
+          },
+          "domain_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the domain"
+          },
+          "domain_name": {
+            "type": "string",
+            "description": "Domain name"
+          }
+        }
+      },
+      "DomainPaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of domains"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of items per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages"
+          },
+          "has_next": {
+            "type": "boolean",
+            "description": "Whether there is a next page"
+          },
+          "has_prev": {
+            "type": "boolean",
+            "description": "Whether there is a previous page"
+          }
+        }
+      },
+      "GetDomainPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/DomainPaginationMeta"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "GetDomainUuidRequest": {
+        "required": [
+          "domain_name",
+          "protocol_type"
+        ],
+        "type": "object",
+        "properties": {
+          "domain_name": {
+            "type": "string",
+            "description": "Domain name to look up"
+          },
+          "protocol_type": {
+            "type": "string",
+            "description": "Protocol type for the domain (e.g., 'https', 'http')"
+          }
+        }
+      },
+      "GetDomainUuidResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "domain_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the domain"
+          }
+        }
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-hookpulse-api-key",
+        "description": "API key for authentication. Get this from your dashboard by selecting a brand and going to API Keys section."
+      },
+      "brandUuidAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-brand-uuid",
+        "description": "Brand UUID for authentication. Get this from your dashboard after adding a brand - it will be displayed in the UI."
       }
     }
   }
