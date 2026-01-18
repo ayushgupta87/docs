@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
     "title": "Hookpulse API",
     "description": "Complete API documentation for Hookpulse. Build powerful integrations with our RESTful API.",
@@ -12,12 +12,8 @@
   },
   "servers": [
     {
-      "url": "https://api.hookpulse.io/v1/api",
+      "url": "https://api.hookpulse.io",
       "description": "Production server"
-    },
-    {
-      "url": "https://api.sandbox.hookpulse.io/v1/api",
-      "description": "Sandbox server for testing"
     }
   ],
   "security": [
@@ -163,7 +159,7 @@
         }
       }
     },
-    "/v1/api/add_domain": {
+    "/v1/api/add_domain/": {
       "post": {
         "description": "Add a new domain to your HookPulse account with rate limiting and concurrency control settings",
         "requestBody": {
@@ -201,7 +197,7 @@
         }
       }
     },
-    "/v1/api/get_domain_paginated": {
+    "/v1/api/get_domain_paginated/": {
       "get": {
         "description": "Retrieve a paginated list of domains from your HookPulse account",
         "parameters": [
@@ -241,7 +237,7 @@
         }
       }
     },
-    "/v1/api/get_domain_uuid": {
+    "/v1/api/get_domain_uuid/": {
       "post": {
         "description": "Retrieve the UUID for a specific domain by providing the domain name and protocol type",
         "requestBody": {
@@ -278,9 +274,7 @@
           }
         }
       }
-    }
-  },
-  "webhooks": {
+    },
     "/webhook": {
       "post": {
         "description": "Webhook endpoint for receiving real-time events from Hookpulse",

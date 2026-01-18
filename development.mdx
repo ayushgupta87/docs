@@ -43,7 +43,7 @@ Create a `.env` file in your project root:
 ```bash
 HOOKPULSE_API_KEY=your_api_key_here
 HOOKPULSE_BRAND_UUID=your_brand_uuid_here
-HOOKPULSE_API_URL=https://api.hookpulse.io/v1/api
+HOOKPULSE_API_URL=https://api.hookpulse.io
 ```
 
 ### Step 3: Test your connection
@@ -84,15 +84,6 @@ print(response.json())
 
 </CodeGroup>
 
-## Sandbox environment
-
-For testing and development, use the sandbox environment:
-
-```
-https://api.sandbox.hookpulse.io/v1/api
-```
-
-The sandbox environment allows you to test integrations without affecting production data.
 
 ## Rate limiting
 
@@ -125,7 +116,6 @@ Then configure your webhook URL in the dashboard to point to your ngrok URL.
 - **Handle errors gracefully** - check response status codes
 - **Implement retry logic** for transient failures
 - **Log requests** for debugging (but never log API keys)
-- **Test in sandbox** before deploying to production
 
 ## Troubleshooting
 
