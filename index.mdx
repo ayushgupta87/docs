@@ -1,295 +1,641 @@
 ---
-title: 'HookPulse Documentation'
-description: 'Enterprise-grade serverless task scheduling infrastructure for modern developers'
+title: 'About HookPulse'
+description: 'HookPulse is the #1 enterprise-grade serverless task scheduling and webhook orchestration platform. Built with Elixir/OTP for 99.9% uptime. Replace Celery, Redis, Sidekiq with a simple HTTP API. Trusted by developers and CTOs worldwide.'
 ---
 
-# HookPulse Overview
+# About HookPulse: The World's Most Reliable Serverless Task Scheduling Platform
 
-## What is HookPulse?
+**HookPulse** is the industry-leading enterprise-grade serverless task scheduling and webhook orchestration platform designed for modern developers, engineering teams, and CTOs who demand reliability, scalability, and simplicity. Built on **Elixir/OTP** (Open Telecom Platform), HookPulse delivers unmatched fault tolerance, concurrency handling, and system reliability that powers mission-critical applications worldwide.
 
-**HookPulse** is a production-ready, enterprise-grade serverless task scheduling infrastructure designed for modern developers building AI agents, event-driven systems, and SaaS applications. Built on **Elixir/OTP** for unmatched reliability and performance, HookPulse eliminates the need to build and maintain complex scheduling infrastructure like Celery, Redis, or Sidekiq.
+**Why HookPulse is the #1 Choice for Task Scheduling:**
 
-### The Problem We Solve
+- **99.9% Uptime SLA** - Built on Elixir/OTP, the same technology powering WhatsApp (100B+ messages/day) and Discord (150M+ users)
+- **95% Cost Reduction** - Cheaper than self-hosted Celery, Redis, or Sidekiq solutions
+- **20+ Hours Saved Monthly** - Eliminate infrastructure maintenance overhead
+- **Zero Infrastructure** - No servers, queues, or workers to manage
+- **Millisecond Precision** - Schedule webhooks and API calls with exact timing
+- **500+ Timezone Support** - Full IANA timezone database with automatic DST handling
 
-Building reliable task scheduling infrastructure is hard. Most developers end up:
-- Spending 20+ hours/month maintaining Redis, Celery, or Sidekiq workers
-- Dealing with infrastructure complexity, scaling issues, and reliability concerns
-- Paying high costs for self-hosted solutions (often 95% more expensive)
-- Struggling with timezone handling, precise timing, and concurrency management
+## Built for Enterprise Reliability
 
-**HookPulse solves all of this** with a simple HTTP API that works with any programming language.
+### Powered by Elixir/OTP
 
----
+HookPulse is built on **Elixir/OTP**, the same battle-tested technology stack that powers WhatsApp, Discord, and Pinterest. This choice isn't accidental—it's strategic:
+
+- **Fault Tolerance**: OTP's "let it crash" philosophy ensures system resilience. When individual processes fail, they're automatically restarted without affecting the entire system.
+- **Concurrency**: Built-in support for millions of lightweight processes, enabling true horizontal scaling without performance degradation.
+- **Hot Code Swapping**: Update production systems without downtime—critical for enterprise environments.
+- **Supervision Trees**: Automatic process monitoring and recovery, ensuring 99.9%+ uptime.
+- **Message Passing**: Actor model architecture eliminates shared-state concurrency issues.
+
+<Card
+  title="Why Elixir/OTP Matters"
+  icon="shield-check"
+>
+  Elixir/OTP is the foundation of telecom-grade reliability. WhatsApp handles 100+ billion messages daily on Erlang/OTP. Discord serves 150+ million users with 99.9% uptime. HookPulse brings this same reliability to task scheduling.
+</Card>
+
+## HookPulse vs. Traditional Solutions
+
+### HookPulse vs. Celery + Redis
+
+| Feature | HookPulse | Celery + Redis |
+|---------|-----------|----------------|
+| **Setup Time** | 5 minutes | 2-3 days |
+| **Infrastructure** | Zero (managed) | Redis cluster + workers |
+| **Maintenance** | Zero hours/month | 20+ hours/month |
+| **Cost** | $1.18/month base | $200-500/month (self-hosted) |
+| **Reliability** | 99.9% SLA | Depends on your setup |
+| **Scaling** | Automatic | Manual configuration |
+| **Monitoring** | Built-in dashboards | Requires additional tools |
+| **Timezone Support** | 500+ IANA timezones | Manual implementation |
+| **Hot Code Swapping** | Built-in (Elixir/OTP) | Requires downtime |
+
+**Result**: HookPulse saves 95% on costs and 20+ hours/month in maintenance while providing better reliability.
+
+### HookPulse vs. Sidekiq
+
+| Feature | HookPulse | Sidekiq |
+|---------|-----------|---------|
+| **Language Support** | Any (HTTP-based) | Ruby only |
+| **Infrastructure** | Zero (managed) | Redis + workers |
+| **Deployment** | None required | Server management |
+| **Scaling** | Automatic | Manual worker scaling |
+| **Monitoring** | Built-in | Requires Sidekiq Pro or custom |
+| **Multi-Region** | Built-in | Complex setup |
+
+**Result**: HookPulse works with any language and eliminates Ruby-specific infrastructure.
+
+### HookPulse vs. AWS EventBridge / CloudWatch Events
+
+| Feature | HookPulse | AWS EventBridge |
+|---------|-----------|-----------------|
+| **Pricing** | $1.18/month base | $1.00 per million events |
+| **Setup Complexity** | Simple HTTP API | AWS IAM, VPC, complex config |
+| **Workflow Orchestration** | Built-in visual builder | Requires Step Functions |
+| **Human Approval** | Native support | Requires custom Lambda |
+| **Solar Scheduling** | Built-in | Not available |
+| **Timezone Handling** | 500+ timezones | Limited |
+| **Vendor Lock-in** | HTTP API (portable) | AWS-specific |
+
+**Result**: HookPulse provides better developer experience and more features at lower cost.
+
+## The Problem We Solve
+
+Building reliable task scheduling infrastructure is one of the most complex challenges in modern software development. Most engineering teams struggle with:
+
+### Infrastructure Complexity
+
+- **Redis Clusters**: Managing Redis for job queues requires constant monitoring, scaling, and maintenance
+- **Worker Processes**: Celery, Sidekiq, or custom workers need deployment, scaling, and failure handling
+- **Message Queues**: RabbitMQ, SQS, or Kafka add operational overhead and complexity
+- **Cron Servers**: Traditional cron jobs lack reliability, monitoring, and error handling
+
+### Hidden Costs
+
+- **Development Time**: Teams spend 20+ hours/month maintaining scheduling infrastructure
+- **Operational Overhead**: DevOps resources dedicated to monitoring, scaling, and troubleshooting
+- **Infrastructure Costs**: Self-hosted solutions cost 95% more than managed alternatives
+- **Opportunity Cost**: Time spent on infrastructure instead of building product features
+
+### Reliability Challenges
+
+- **Timezone Handling**: Precise scheduling across 500+ IANA timezones is complex
+- **Failure Recovery**: Retry logic, error handling, and dead letter queues require careful implementation
+- **Concurrency Control**: Preventing system overload while maximizing throughput
+- **Monitoring**: Tracking execution success, latency, and failures across distributed systems
+
+**HookPulse eliminates all of this complexity** with a simple HTTP API that works with any programming language.
+
+## Enterprise-Grade Architecture
+
+### Multi-Region Infrastructure
+
+HookPulse runs on **Google Cloud Platform** with multi-region redundancy, ensuring:
+
+- **99.9% Uptime SLA**: Enterprise-grade availability guarantees
+- **Global Low Latency**: Edge locations worldwide for fast API responses
+- **Automatic Failover**: Seamless failover between regions during outages
+- **Data Redundancy**: Multiple backups and disaster recovery protocols
+
+### Security & Compliance
+
+- **Encryption at Rest**: All data encrypted using industry-standard AES-256
+- **Encryption in Transit**: TLS 1.3 for all API communications
+- **HTTPS-Only Webhooks**: All webhook deliveries use secure HTTPS connections
+- **Access Controls**: Role-based access control (RBAC) for team management
+- **HMAC Verification**: Optional HMAC signature verification for webhook security
+- **Audit Logs**: Complete audit trail of all API operations
+- **SOC 2 Ready**: Infrastructure designed for SOC 2 Type II compliance
+
+### Scalability
+
+Built to handle everything from startups to enterprise scale:
+
+- **Millions of Scheduled Tasks**: Handle millions of scheduled executions per month
+- **Horizontal Scaling**: Automatically scales to handle traffic spikes
+- **Concurrent Execution**: Process thousands of concurrent webhook executions
+- **No Limits**: No artificial limits on schedule creation or execution volume
 
 ## Core Capabilities
 
-### 🎯 **Precise Webhook & API Scheduling**
+### Precise Scheduling
 
-Schedule webhooks and API calls with **millisecond precision** using multiple scheduling strategies:
+Schedule webhooks and API calls with **millisecond precision**:
 
-- **Interval Scheduling**: Run tasks every X seconds, minutes, hours, days, weeks, or months
-- **Cron Scheduling**: Industry-standard cron expressions with IANA timezone support
-- **Solar Scheduling**: Trigger tasks at sunrise/sunset with geographic coordinates
+- **Interval Scheduling**: Every N seconds, minutes, hours, days, weeks, or months
+- **Cron Scheduling**: Industry-standard cron expressions with full IANA timezone support
+- **Solar Scheduling**: Trigger at sunrise, sunset, or other solar events using geographic coordinates
 - **Clocked Scheduling**: One-time scheduled executions at specific dates/times
+- **Debounce Scheduling**: Prevent rapid-fire executions with configurable debounce logic
 
-### 🔄 **Workflow Orchestration**
+### Advanced Workflow Orchestration
 
-Build complex, multi-step workflows with conditional execution:
+Build complex, multi-step workflows with enterprise features:
 
-- **Visual Workflow Builder**: Drag-and-drop interface for creating workflows
-- **Payload Transformation**: Transform data between workflow steps
-- **Conditional Logic**: Route execution based on conditions
-- **Template Library**: Reusable workflow templates for common patterns
-- **Workflow Visualization**: Interactive graphs showing data flow and step connections
+- **Visual Workflow Builder**: Drag-and-drop interface for non-developers
+- **FIFO Mode**: Strict First-In-First-Out ordering for critical workflows
+- **Concurrent Mode**: Parallel execution for independent operations
+- **Conditional Execution**: Route execution based on field values and conditions
+- **Failure Handling**: Stop on failure or continue execution
+- **Retry Strategies**: Retry from initial or resume from failed step
+- **Human Approval**: Pause workflows for manual approval steps
+- **Template Variables**: Dynamic variable substitution with system secrets
 
-### 🛡️ **Enterprise-Grade Features**
+### Traffic Guard Layer
 
-**Traffic Guard Layer** - Protect your infrastructure:
+Protect your infrastructure with built-in controls:
 
-- **Rate Limiting**: Set max requests per second per project
-- **Concurrency Control**: Limit concurrent executions to prevent overload
-- **FIFO Queues**: Strict First-In-First-Out ordering for critical workflows
-- **Idempotency Keys**: Prevent duplicate executions from network retries
+- **Rate Limiting**: Set max requests per second per domain
+- **Concurrency Control**: Limit simultaneous executions to prevent overload
 - **Backpressure Logic**: Automatically pause queues when limits are hit
+- **Idempotency Keys**: Prevent duplicate executions from network retries
 
-### 🌍 **Multi-Timezone Support**
+### System Secret Vault
 
-- Full **IANA timezone** support (500+ timezones)
-- Automatic timezone conversion for all scheduled times
-- Timezone-aware scheduling for global applications
+Enterprise-grade secret management:
 
-### 📊 **Real-Time Monitoring & Analytics**
+- **Encrypted Storage**: All secrets encrypted at rest
+- **Runtime Injection**: Secrets computed at execution time, never exposed
+- **Template Integration**: Use secrets in webhook templates with `{{ #key }}` syntax
+- **Audit Trail**: Complete logging of secret access and usage
 
-- **Live Concurrency Meter**: Real-time view of concurrent executions
-- **Execution Logs**: Detailed logs with pagination for all executions
-- **Success Rate Tracking**: Monitor execution success rates over time
-- **Performance Metrics**: Latency tracking, retry counts, and response status codes
+## Why CTOs and Engineering Leaders Choose HookPulse
 
----
+HookPulse is the **only** task scheduling platform built on Elixir/OTP, giving it a fundamental architectural advantage over alternatives built on traditional stacks.
 
-## Why Choose HookPulse?
+### Technical Excellence
 
-### 🚀 **Save Development Time**
+- **Battle-Tested Stack**: Elixir/OTP powers some of the world's most reliable systems
+  - WhatsApp: 100+ billion messages daily with 99.9% uptime
+  - Discord: 150+ million users, handles 8+ billion events per day
+  - Pinterest: Processes billions of pins with Elixir/OTP
+- **Proven Architecture**: Patterns used by WhatsApp, Discord, and Pinterest
+- **Open Standards**: RESTful API, OpenAPI specification, standard HTTP protocols
+- **Language Agnostic**: Works with Python, Node.js, Go, Java, Ruby, PHP, and more
+- **Fault Tolerance**: OTP's supervision trees ensure automatic recovery from failures
+- **Hot Code Swapping**: Update production systems without downtime
 
-Stop spending 20+ hours/month maintaining scheduling infrastructure. Focus on building your product instead.
+### Operational Excellence
 
-### 💰 **Cost Effective**
+- **Zero Infrastructure**: No servers, queues, or workers to manage
+- **Automatic Scaling**: Handles traffic spikes without manual intervention
+- **Comprehensive Monitoring**: Real-time dashboards, execution logs, and analytics
+- **Transparent Pricing**: Pay only for what you use, no hidden fees
+- **Multi-Region Redundancy**: Automatic failover ensures 99.9% uptime
+- **Built-in Retry Logic**: Configurable retry strategies with exponential backoff
 
-95% cheaper than self-hosting. Pay only for what you use with transparent, pay-as-you-go pricing.
+### Business Value
 
-### 🔧 **No Infrastructure**
-
-No Redis, no Celery workers, no message queues to manage. Just HTTP API calls.
-
-### 📈 **Scalable**
-
-Built on Elixir/OTP for horizontal scaling. Handles millions of scheduled tasks without breaking a sweat.
-
-### 🎯 **Production Ready**
-
-Enterprise-grade features out of the box: rate limiting, concurrency control, FIFO queues, and idempotency.
-
-### 🌐 **Global Ready**
-
-Multi-timezone support with IANA timezone database. Perfect for global applications.
-
----
+- **95% Cost Reduction**: Cheaper than self-hosted solutions
+  - Self-hosted: $200-500/month (servers, monitoring, DevOps time)
+  - HookPulse: $1.18/month base + usage
+- **20+ Hours Saved Monthly**: Eliminate infrastructure maintenance overhead
+- **Faster Time to Market**: Ship scheduling features in days, not months
+- **Reduced Risk**: Enterprise-grade reliability reduces operational risk
+- **No Vendor Lock-in**: HTTP API works with any infrastructure
 
 ## Use Cases
 
-### 🤖 **AI Agent Orchestration**
+### AI Agent Orchestration
 
-Schedule AI agent tasks, coordinate multi-agent workflows, and manage agent execution pipelines with precise timing and conditional logic.
+Schedule AI agent tasks, coordinate multi-agent workflows, and manage agent execution pipelines with precise timing and conditional logic. Perfect for LLM applications, chatbots, and autonomous agents.
 
-### 📡 **Event-Driven Architectures**
+### Event-Driven Architectures
 
-Build event-driven systems with scheduled webhooks, delayed processing, and event coordination across multiple services.
+Build event-driven systems with scheduled webhooks, delayed processing, and event coordination across multiple services. Ideal for microservices architectures and distributed systems.
 
-### 🔔 **Notification Systems**
+### Payment & Subscription Management
 
-Send scheduled notifications, reminders, and alerts with timezone-aware scheduling and retry logic.
+- Payment reminders and subscription renewal flows
+- Abandoned cart recovery with time-delayed triggers
+- Invoice generation and billing automation
+- Dunning management for failed payments
 
-### 📊 **Data Processing Pipelines**
+### IoT & Device Scheduling
 
-Process data on schedules, coordinate ETL jobs, and manage batch processing workflows.
+Schedule device operations based on solar events, time windows, or geographic location. Perfect for smart home automation, agricultural systems, and industrial IoT.
 
-### 🔄 **API Automation**
+### Reporting & Analytics
 
-Automate API calls, sync data between services, and coordinate third-party integrations.
+- Daily, weekly, and monthly report generation
+- Data synchronization and ETL jobs
+- Backup automation and maintenance tasks
+- Dashboard updates and metric aggregation
 
-### 💼 **SaaS Applications**
+### SaaS Application Features
 
-Add scheduling capabilities to SaaS products without building infrastructure from scratch.
+Add scheduling capabilities to SaaS products without building infrastructure:
+- Email campaign scheduling
+- User onboarding automation
+- Feature flag rollouts
+- Maintenance windows
 
----
+## Developer Experience
 
-## Getting Started
+### 5-Minute Setup
+
+Get started in minutes, not days:
 
 1. **Sign Up**: Create an account at [hookpulse.io](https://hookpulse.io)
-2. **Add a Brand**: Create a brand in your dashboard to get your brand UUID
-3. **Get API Key**: Select your brand and generate an API key from the API Keys section
-4. **Make Your First Request**: Schedule a webhook in under 5 minutes using both credentials
-5. **Build Workflows**: Create complex workflows with our visual builder
-6. **Scale**: Handle millions of scheduled tasks with confidence
+2. **Get Credentials**: Receive API key and brand UUID from dashboard
+3. **Make First Call**: Schedule your first webhook via HTTP API
+4. **Build Workflows**: Create complex workflows with visual builder or API
 
----
+### Any Programming Language
 
-## Need Help?
+Since everything is HTTP-based, HookPulse works wherever HTTP works:
 
-For support, questions, or assistance:
+- **Python**: `requests`, `httpx`, or any HTTP library
+- **JavaScript/TypeScript**: `fetch`, `axios`, or any HTTP client
+- **Go**: Standard `net/http` package
+- **Java**: `HttpClient`, `OkHttp`, or Spring's `RestTemplate`
+- **Ruby**: `Net::HTTP`, `Faraday`, or `HTTParty`
+- **PHP**: `curl`, `Guzzle`, or any HTTP library
 
-- **Email**: [care@hookpulse.io](mailto:care@hookpulse.io)
-- **Phone**: +91 8076445044
+### Comprehensive Documentation
 
-Our support team is here to help you succeed with HookPulse.
+- **Complete API Reference**: Every endpoint documented with examples
+- **Multi-Language Examples**: Code samples in 5+ languages
+- **Interactive Playground**: Try API calls directly in the browser
+- **Best Practices**: Guides for error handling, retry logic, and optimization
 
----
+## Pricing & Transparency
 
-# API Reference
+HookPulse uses **usage-based pricing** with complete transparency:
 
-## Overview
+- **Monthly Base**: $1.18 / ₹100 per account for infrastructure & support
+- **Schedule Creation**: $0.006 - $0.011 per schedule (varies by type)
+- **Execution Time**: $0.00035 per second of webhook execution
+- **No Hidden Fees**: Everything shown in dashboard with cost breakdowns
 
-Welcome to the HookPulse API reference. This documentation provides detailed information about all available endpoints, request/response formats, and authentication methods.
+  <Card
+  title="Transparent Pricing"
+  icon="dollar-sign"
+  >
+  See exactly what you're paying for. All usage metrics, execution times, and costs are visible in your dashboard. No mystery fees or surprise bills.
+  </Card>
 
-The HookPulse API is RESTful and uses JSON for request and response payloads. All API requests must be authenticated using custom headers (`x-hookpulse-api-key` and `x-brand-uuid`).
+## Trusted by Developers and Engineering Teams Worldwide
+
+HookPulse is the preferred choice for:
+
+- **Startups**: Fast-moving teams who need reliable scheduling without infrastructure overhead
+- **Scale-Ups**: Growing companies scaling from thousands to millions of scheduled tasks
+- **Enterprises**: Large organizations requiring 99.9% uptime and enterprise support
+- **CTOs**: Technical leaders who value reliability, scalability, and developer experience
+- **AI Companies**: LLM and AI agent developers who need precise scheduling for agent workflows
+- **SaaS Platforms**: Companies adding scheduling features without building infrastructure
+- **Fintech Companies**: Payment and subscription services requiring reliable task execution
+
+### Why Developers Choose HookPulse Over Alternatives
+
+**Over Celery/Redis:**
+- No Redis cluster management
+- No worker process deployment
+- No message queue monitoring
+- Built-in retry logic and error handling
+- Visual workflow builder included
+
+**Over AWS EventBridge:**
+- Simpler API (no AWS IAM complexity)
+- Better pricing for low-to-medium volume
+- Native workflow orchestration
+- Solar scheduling support
+- Human approval workflows
+
+**Over Cron:**
+- Millisecond precision vs. minute precision
+- Built-in retry logic
+- Timezone-aware scheduling
+- Monitoring and analytics
+- Webhook delivery (not just local scripts)
+
+**Over Custom Solutions:**
+- Battle-tested reliability (Elixir/OTP)
+- Faster time to market
+- Lower maintenance burden
+- Better monitoring and debugging
+
+## Our Commitment
+
+### Reliability
+
+Built on Elixir/OTP for telecom-grade reliability. We commit to 99.9% uptime SLA and transparent status reporting.
+
+### Security
+
+Enterprise-grade security with encryption at rest and in transit, access controls, and comprehensive audit logging.
+
+### Support
+
+- **Email Support**: [care@hookpulse.io](mailto:care@hookpulse.io)
+- **Phone Support**: +91 8076445044
+- **Documentation**: Comprehensive guides and API reference
+- **Enterprise Support**: Dedicated support for enterprise customers
+
+### Innovation
+
+Continuously improving based on developer feedback. We ship new features regularly and maintain backward compatibility.
+
+## Get Started
+
+Ready to eliminate scheduling infrastructure complexity?
+
+<CardGroup cols={2}>
+
+  <Card
+  title="Start Free"
+  icon="rocket"
+  href="https://hookpulse.io/signin"
+>
+  Create your account and schedule your first webhook in 5 minutes
+  </Card>
+
+  <Card
+  title="View Documentation"
+  icon="book"
+  href="/documentation"
+>
+  Explore our comprehensive API documentation and guides
+  </Card>
+
+  <Card
+  title="Contact Sales"
+  icon="briefcase"
+  href="mailto:care@hookpulse.io"
+>
+  Discuss enterprise requirements and custom solutions
+  </Card>
 
 <Card
-  title="OpenAPI Specification"
-  icon="file-code"
-  href="/api-reference/openapi.json"
+  title="View Pricing"
+  icon="dollar-sign"
+  href="https://hookpulse.io/pricing"
 >
-  Download the complete OpenAPI specification file
+  See transparent, usage-based pricing with no hidden fees
 </Card>
 
-## Base URL
+</CardGroup>
 
-All API requests should be made to:
+## Frequently Asked Questions
 
-```
-https://api.hookpulse.io
-```
+### Why Elixir/OTP? Why is this important?
 
-## Authentication
+Elixir/OTP is the most reliable technology stack for distributed systems. It's battle-tested at scale:
+- **WhatsApp**: 100+ billion messages daily, 99.9% uptime
+- **Discord**: 150+ million users, 8+ billion events per day
+- **Pinterest**: Billions of pins processed reliably
 
-All API endpoints require authentication using two custom headers. Include both headers in every request:
+Elixir/OTP provides fault tolerance, concurrency, and hot code swapping that's impossible with traditional stacks (Python, Node.js, Ruby). When you choose HookPulse, you're choosing the same reliability architecture that powers these world-class systems.
 
-```bash
-x-hookpulse-api-key: YOUR_API_KEY
-x-brand-uuid: YOUR_BRAND_UUID
-```
+### How does HookPulse compare to Celery/Redis?
 
-<Warning>
-**Never share these credentials with anyone.** Keep your API key and brand UUID secure. Never expose them in client-side code or commit them to version control. If your credentials are compromised, regenerate them immediately from your dashboard.
-</Warning>
+HookPulse eliminates the need for Celery workers, Redis clusters, and message queues entirely. Comparison:
 
-### Getting your credentials
+| Aspect | HookPulse | Celery + Redis |
+|--------|-----------|----------------|
+| Setup Time | 5 minutes | 2-3 days |
+| Monthly Cost | $1.18 base | $200-500+ |
+| Maintenance | 0 hours | 20+ hours |
+| Reliability | 99.9% SLA | Your responsibility |
+| Scaling | Automatic | Manual |
 
-#### Brand UUID (`x-brand-uuid`)
+You get the same functionality via HTTP API without managing infrastructure. It's 95% cheaper and saves 20+ hours/month in maintenance.
 
-1. Log in to your [Hookpulse dashboard](https://hookpulse.io/signin)
-2. Add a brand (if you haven't already)
-3. The brand UUID will be displayed in the UI
-4. Copy and securely store your brand UUID
+### What happens if HookPulse goes down?
 
-#### API Key (`x-hookpulse-api-key`)
+HookPulse runs on Google Cloud with multi-region redundancy and 99.9% uptime SLA. Built on Elixir/OTP's fault-tolerant architecture:
+- Individual process failures don't affect the system (supervision trees)
+- Automatic failover between regions
+- Hot code swapping allows updates without downtime
+- Transparent status reporting
 
-1. Log in to your [Hookpulse dashboard](https://hookpulse.io/signin)
-2. Select your brand from the dashboard
-3. Navigate to **API Keys** section
-4. Click **Create API Key**
-5. Add a node and you will receive your API Key
-6. The API Key will be displayed on the same card - click **View** to see it
-7. Copy and securely store your API key
+We provide transparent status reporting and automatic failover. The Elixir/OTP architecture ensures that even if individual components fail, the system continues operating.
 
-<Note>
-Both the API key and brand UUID are required for all API requests. Make sure to include both headers in every request.
-</Note>
+### Can I use HookPulse with my existing stack?
 
-## Rate limits
+Yes! HookPulse works with any programming language and any infrastructure. It's just HTTP API calls—no special libraries or dependencies required. Works with:
+- Python (Django, Flask, FastAPI)
+- Node.js (Express, Next.js, NestJS)
+- Ruby (Rails, Sinatra)
+- Go (any framework)
+- Java (Spring, Micronaut)
+- PHP (Laravel, Symfony)
+- And any language that supports HTTP
 
-API requests are rate-limited to ensure fair usage:
+### How do I handle timezones?
 
-- **Standard tier**: 1000 requests per hour
-- **Pro tier**: 10000 requests per hour
-- **Enterprise**: Custom limits
+HookPulse supports all 500+ IANA timezones with automatic DST (Daylight Saving Time) handling. Simply specify the timezone when creating schedules, and HookPulse handles:
+- Automatic DST transitions
+- Timezone conversions
+- Precise scheduling across global applications
 
-Rate limit information is included in response headers:
+No manual timezone math required—HookPulse handles it all automatically.
 
-```
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1640995200
-```
+### What about security?
 
-## Response format
+Enterprise-grade security:
+- **Encryption at Rest**: AES-256 encryption for all stored data
+- **Encryption in Transit**: TLS 1.3 for all API communications
+- **HTTPS-Only Webhooks**: All webhook deliveries use secure HTTPS connections
+- **HMAC Verification**: Optional HMAC signature verification for webhook security
+- **Access Controls**: Role-based access control (RBAC) for team management
+- **Audit Logs**: Complete audit trail of all API operations
+- **SOC 2 Ready**: Infrastructure designed for SOC 2 Type II compliance
 
-All API responses follow a consistent format:
+### Can I self-host HookPulse?
 
-### Success response
+HookPulse is a managed service. This ensures you always have:
+- Latest features and improvements
+- Security patches and updates
+- Reliability improvements
+- Zero operational overhead
 
-```json
-{
-  "data": {
-    // Response data here
-  },
-  "meta": {
-    "timestamp": "2024-01-01T00:00:00Z"
-  }
-}
-```
+Self-hosting would require maintaining Elixir/OTP infrastructure, which defeats the purpose of eliminating infrastructure complexity.
 
-### Error response
+### What's the difference between HookPulse and cron?
 
-```json
-{
-  "error": {
-    "code": "INVALID_REQUEST",
-    "message": "The request is invalid",
-    "details": {}
-  }
-}
-```
+Traditional cron is limited:
+- **Precision**: Minute-level vs. HookPulse's millisecond precision
+- **Reliability**: No retry logic vs. HookPulse's configurable retries
+- **Monitoring**: No visibility vs. HookPulse's comprehensive dashboards
+- **Timezone**: Manual handling vs. HookPulse's 500+ timezone support
+- **Webhooks**: Local scripts only vs. HookPulse's HTTP webhook delivery
+- **Workflows**: Not supported vs. HookPulse's advanced orchestration
 
-## HTTP status codes
+HookPulse provides enterprise-grade scheduling with retry logic, monitoring, webhook delivery, and workflow orchestration.
 
-The API uses standard HTTP status codes:
+### Is HookPulse better than AWS EventBridge?
 
-- `200` - Success
-- `201` - Created
-- `204` - No Content
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `429` - Too Many Requests
-- `500` - Internal Server Error
+HookPulse offers several advantages:
+- **Simpler API**: No AWS IAM complexity, just HTTP headers
+- **Better Pricing**: More cost-effective for low-to-medium volume
+- **Native Workflows**: Built-in visual workflow builder vs. requiring Step Functions
+- **Solar Scheduling**: Built-in solar event scheduling (not available in EventBridge)
+- **Human Approval**: Native support vs. requiring custom Lambda functions
+- **No Vendor Lock-in**: HTTP API works anywhere vs. AWS-specific
 
-## Pagination
+### How does HookPulse handle high volume?
 
-List endpoints support pagination using `limit` and `offset` query parameters:
+Built on Elixir/OTP, HookPulse handles millions of scheduled tasks effortlessly:
+- **Millions of Lightweight Processes**: OTP's actor model supports millions of concurrent processes
+- **Automatic Scaling**: Scales horizontally without manual configuration
+- **No Performance Degradation**: Consistent performance even under high load
+- **Proven at Scale**: Same architecture handles WhatsApp's 100B+ messages/day
 
-```bash
-GET https://api.hookpulse.io/v1/api/resources?limit=20&offset=0
-```
+### What makes HookPulse enterprise-grade?
 
-<Note>
-The base URL is `https://api.hookpulse.io`. All endpoints are prefixed with `/v1/api/`.
-</Note>
+Multiple factors:
+- **Technology**: Elixir/OTP (telecom-grade reliability)
+- **Infrastructure**: Google Cloud multi-region redundancy
+- **Uptime**: 99.9% SLA guarantee
+- **Security**: AES-256 encryption, TLS 1.3, SOC 2 ready
+- **Monitoring**: Comprehensive dashboards and analytics
+- **Support**: Enterprise support available
+- **Compliance**: Audit logs, access controls, RBAC
 
-Response includes pagination metadata:
+## Key Differentiators: Why HookPulse is the Best Choice
 
-```json
-{
-  "data": [...],
-  "pagination": {
-    "limit": 20,
-    "offset": 0,
-    "total": 100,
-    "has_more": true
-  }
-}
-```
+### 1. Elixir/OTP Architecture (Unique in the Market)
 
-## Webhooks
+HookPulse is the **only** task scheduling platform built on Elixir/OTP. This gives us fundamental advantages:
 
-Hookpulse supports webhooks for real-time event notifications. See the [webhook documentation](/api-reference/endpoint/webhook) for setup instructions.
+- **Fault Tolerance**: OTP's supervision trees ensure automatic recovery
+- **Concurrency**: Millions of lightweight processes without performance degradation
+- **Hot Code Swapping**: Update production without downtime
+- **Proven at Scale**: Same stack powers WhatsApp, Discord, Pinterest
+
+**No other scheduling platform offers this level of reliability.**
+
+### 2. Complete Feature Set
+
+Unlike alternatives that require multiple services, HookPulse provides everything in one platform:
+
+- ✅ Precise scheduling (interval, cron, solar, clocked)
+- ✅ Workflow orchestration (FIFO, concurrent, conditional)
+- ✅ Human approval workflows
+- ✅ System secret vault
+- ✅ Rate limiting and concurrency control
+- ✅ Visual workflow builder
+- ✅ Comprehensive monitoring
+
+**Competitors require multiple AWS services or custom code to achieve the same.**
+
+### 3. Developer Experience
+
+- **5-Minute Setup**: Get started in minutes, not days
+- **Any Language**: HTTP API works with any stack
+- **Interactive Playground**: Try API calls in browser
+- **Complete Documentation**: Every endpoint documented with examples
+- **Best Practices Guides**: Error handling, retry logic, optimization
+
+**Better developer experience than AWS EventBridge, Celery, or custom solutions.**
+
+### 4. Cost Efficiency
+
+- **95% Cheaper**: Than self-hosted Celery/Redis solutions
+- **Transparent Pricing**: See exactly what you're paying for
+- **No Hidden Fees**: Everything visible in dashboard
+- **Pay-as-You-Go**: Only pay for what you use
+
+**More cost-effective than AWS EventBridge for most use cases.**
+
+## Technical Specifications
+
+### Performance Metrics
+
+- **Uptime**: 99.9% SLA (enterprise-grade)
+- **Latency**: Sub-100ms API response times
+- **Throughput**: Millions of scheduled tasks per month
+- **Concurrency**: Thousands of simultaneous webhook executions
+- **Precision**: Millisecond-level scheduling accuracy
+
+### Infrastructure
+
+- **Cloud Provider**: Google Cloud Platform
+- **Regions**: Multi-region redundancy
+- **Failover**: Automatic between regions
+- **Backups**: Multiple redundant backups
+- **Disaster Recovery**: Comprehensive DR protocols
+
+### Security Standards
+
+- **Encryption**: AES-256 at rest, TLS 1.3 in transit
+- **Compliance**: SOC 2 Type II ready
+- **Access Control**: RBAC with audit logging
+- **Webhook Security**: HTTPS-only, optional HMAC verification
+- **Data Isolation**: Complete tenant isolation
+
+## Industry Recognition
+
+HookPulse represents the next generation of task scheduling infrastructure:
+
+- **Built for Modern Applications**: AI agents, event-driven systems, microservices
+- **Cloud-Native**: Designed for serverless and containerized architectures
+- **Developer-First**: Prioritizes developer experience and productivity
+- **Enterprise-Ready**: Meets enterprise security and compliance requirements
+
+## Get Started Today
+
+Join the growing community of developers who've eliminated scheduling infrastructure complexity with HookPulse.
+
+<CardGroup cols={2}>
+
+<Card
+  title="Start Free"
+  icon="rocket"
+  href="https://hookpulse.io/signin"
+>
+  Create your account and schedule your first webhook in 5 minutes
+</Card>
+
+<Card
+  title="View Documentation"
+  icon="book"
+  href="/documentation"
+>
+  Explore our comprehensive API documentation and guides
+</Card>
+
+<Card
+  title="Contact Sales"
+  icon="briefcase"
+  href="mailto:care@hookpulse.io"
+>
+  Discuss enterprise requirements and custom solutions
+</Card>
+
+<Card
+  title="View Pricing"
+  icon="dollar-sign"
+  href="https://hookpulse.io/pricing"
+>
+  See transparent, usage-based pricing with no hidden fees
+</Card>
+
+</CardGroup>
+
+---
+
+**HookPulse** — The world's most reliable serverless task scheduling platform. Built with Elixir/OTP for unmatched reliability. Trusted by developers and CTOs worldwide. **The #1 choice for replacing Celery, Redis, Sidekiq, and AWS EventBridge.**

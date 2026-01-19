@@ -333,6 +333,160 @@
         }
       }
     },
+    "/v1/api/get_webhook_template_paginated/": {
+      "get": {
+        "description": "Retrieve a paginated list of all webhook templates in your HookPulse account",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to retrieve (starts from 1)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhookTemplatePaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/single_webhook_template_detail/": {
+      "post": {
+        "description": "Retrieve detailed information about a specific webhook template by its UUID",
+        "requestBody": {
+          "description": "Webhook template lookup request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetWebhookTemplateUuidRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhookTemplateUuidResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_webhook_template_uuid/": {
+      "post": {
+        "description": "Retrieve the UUID of a webhook template by providing its name",
+        "requestBody": {
+          "description": "Webhook template lookup by name",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetWebhookTemplateUuidByNameRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhookTemplateUuidByNameResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebhookTemplateUuidByNameErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/delete_webhook_template/": {
+      "delete": {
+        "description": "Delete a webhook template from your HookPulse account",
+        "requestBody": {
+          "description": "Webhook template deletion request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteWebhookTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook template deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteWebhookTemplateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/add_system_secret/": {
       "post": {
         "description": "Add a new secret to the System Secret Vault for use in webhook templates",
@@ -878,6 +1032,250 @@
           "message": {
             "type": "string",
             "description": "Success message or error details"
+          }
+        }
+      },
+      "GetWebhookTemplatePaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookTemplateListItem"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "WebhookTemplateListItem": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "URL path for the webhook template"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the template was created"
+          },
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook template"
+          },
+          "webhook_description": {
+            "type": "string",
+            "description": "Description of the webhook template"
+          },
+          "request_timeout_in_milliseconds": {
+            "type": "integer",
+            "description": "Request timeout in milliseconds"
+          },
+          "max_retries": {
+            "type": "integer",
+            "description": "Maximum number of retry attempts"
+          },
+          "retry_delay": {
+            "type": "integer",
+            "description": "Delay in seconds between retry attempts"
+          },
+          "retry_backoff_mode": {
+            "type": "string",
+            "description": "Retry backoff strategy",
+            "enum": ["linear", "exponential"]
+          },
+          "domain_details": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "Domain name"
+              },
+              "protocol_type": {
+                "type": "string",
+                "description": "Protocol type (e.g., 'https', 'http')"
+              }
+            }
+          },
+          "webhook_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the webhook template"
+          }
+        }
+      },
+      "GetWebhookTemplateUuidRequest": {
+        "required": [
+          "webhook_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "webhook_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook template to retrieve"
+          }
+        }
+      },
+      "GetWebhookTemplateUuidResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WebhookTemplateDetails"
+          }
+        }
+      },
+      "WebhookTemplateDetails": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "URL path for the webhook template"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the template was created"
+          },
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook template"
+          },
+          "webhook_description": {
+            "type": "string",
+            "description": "Description of the webhook template"
+          },
+          "request_timeout_in_milliseconds": {
+            "type": "integer",
+            "description": "Request timeout in milliseconds"
+          },
+          "max_retries": {
+            "type": "integer",
+            "description": "Maximum number of retry attempts"
+          },
+          "retry_delay": {
+            "type": "integer",
+            "description": "Delay in seconds between retry attempts"
+          },
+          "retry_backoff_mode": {
+            "type": "string",
+            "description": "Retry backoff strategy",
+            "enum": ["linear", "exponential"]
+          },
+          "domain_details": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "Domain name"
+              },
+              "protocol_type": {
+                "type": "string",
+                "description": "Protocol type (e.g., 'https', 'http')"
+              }
+            }
+          },
+          "expected_system_variables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of system secret variable names expected in this template"
+          },
+          "headers_json": {
+            "type": "object",
+            "description": "HTTP headers as JSON object (supports template variables)"
+          },
+          "query_params_json": {
+            "type": "object",
+            "description": "Query parameters as JSON object (supports template variables)"
+          },
+          "request_body_json": {
+            "type": "object",
+            "description": "Request body as JSON object (supports template variables)"
+          },
+          "webhook_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the webhook template"
+          }
+        }
+      },
+      "GetWebhookTemplateUuidByNameRequest": {
+        "required": [
+          "webhook_name"
+        ],
+        "type": "object",
+        "properties": {
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook template"
+          }
+        }
+      },
+      "GetWebhookTemplateUuidByNameResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "webhook_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the webhook template"
+          }
+        }
+      },
+      "GetWebhookTemplateUuidByNameErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      },
+      "DeleteWebhookTemplateRequest": {
+        "required": [
+          "webhook_template_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "webhook_template_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook template to delete"
+          }
+        }
+      },
+      "DeleteWebhookTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message confirming the deletion"
           }
         }
       },

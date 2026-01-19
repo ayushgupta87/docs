@@ -21,9 +21,16 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Reference",
+            "group": "About HookPulse",
             "pages": [
               "index"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "documentation",
+              "api-reference/error-handling"
             ]
           },
           {
@@ -50,7 +57,11 @@
             "group": "Webhook Template",
             "pages": [
               "api-reference/webhook-template/overview",
-              "api-reference/webhook-template/add-webhook-template"
+              "api-reference/webhook-template/add-webhook-template",
+              "api-reference/webhook-template/get-webhook-template-paginated",
+              "api-reference/webhook-template/single-webhook-template-detail",
+              "api-reference/webhook-template/get-webhook-template-uuid",
+              "api-reference/webhook-template/delete-webhook-template"
             ]
           },
           {

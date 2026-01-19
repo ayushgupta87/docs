@@ -96,15 +96,22 @@ All API responses follow a consistent format:
 
 ### Error response
 
+All endpoints use a consistent error format:
+
 ```json
 {
-  "error": {
-    "code": "INVALID_REQUEST",
-    "message": "The request is invalid",
-    "details": {}
-  }
+  "success": false,
+  "error": "ERROR_MESSAGE_HERE"
 }
 ```
+
+<Card
+  title="Error Handling Guide"
+  icon="exclamation-triangle"
+  href="/api-reference/error-handling"
+>
+  Learn how to handle errors, implement retry logic, and follow best practices
+</Card>
 
 ## HTTP status codes
 

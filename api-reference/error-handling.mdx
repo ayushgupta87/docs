@@ -1,0 +1,391 @@
+---
+title: 'Error Handling'
+description: 'Comprehensive guide to handling API errors in HookPulse'
+---
+
+All HookPulse API endpoints use a consistent error response format. This guide explains how errors are structured and how to handle them in your application.
+
+## Error Response Format
+
+All API endpoints return errors in the same format:
+
+```json
+{
+  "success": false,
+  "error": "ERROR_MESSAGE_HERE"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Always `false` for error responses |
+| `error` | string | Human-readable error message describing what went wrong |
+
+## HTTP Status Codes
+
+HookPulse uses standard HTTP status codes to indicate the type of error:
+
+| Status Code | Meaning | Description |
+|-------------|---------|-------------|
+| `200` | OK | Request succeeded (check `success` field in response body) |
+| `400` | Bad Request | Invalid request parameters or malformed request body |
+| `401` | Unauthorized | Missing or invalid authentication credentials |
+| `403` | Forbidden | Valid credentials but insufficient permissions |
+| `404` | Not Found | Requested resource does not exist |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server-side error occurred |
+
+<Note>
+Even when the HTTP status code is `200`, you should always check the `success` field in the response body. Some endpoints return `200` with `success: false` for business logic errors.
+</Note>
+
+## Common Error Messages
+
+### Authentication Errors
+
+```
+"Invalid API key"
+"Invalid brand UUID"
+"Missing API key"
+"Missing brand UUID"
+"Authentication failed"
+```
+
+### Validation Errors
+
+```
+"Invalid request body"
+"Missing required field: {field_name}"
+"Invalid field value: {field_name}"
+"Field validation failed: {field_name}"
+```
+
+### Resource Errors
+
+```
+"Webhook not found"
+"Domain not found"
+"Secret not found"
+"Key with same name already in database"
+"Resource not found"
+```
+
+### Rate Limiting Errors
+
+```
+"Rate limit exceeded"
+"Too many requests"
+```
+
+### System Errors
+
+```
+"Internal server error"
+"Service temporarily unavailable"
+"Database error"
+```
+
+## Error Handling Examples
+
+### JavaScript/TypeScript
+
+```javascript
+async function makeApiRequest(url, options) {
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    
+    // Check HTTP status code
+    if (!response.ok) {
+      // Handle HTTP errors (4xx, 5xx)
+      if (response.status === 401) {
+        throw new Error('Authentication failed. Please check your API credentials.');
+      } else if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      } else {
+        throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
+      }
+    }
+    
+    // Check success field in response body
+    if (!data.success) {
+      // Handle business logic errors
+      throw new Error(data.error || 'Request failed');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('API request failed:', error.message);
+    throw error;
+  }
+}
+
+// Usage
+try {
+  const result = await makeApiRequest('https://api.hookpulse.io/v1/api/add_domain/', {
+    method: 'POST',
+    headers: {
+      'x-hookpulse-api-key': 'YOUR_API_KEY',
+      'x-brand-uuid': 'YOUR_BRAND_UUID',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      domain: 'example.com',
+      protocol_type: 'https'
+    })
+  });
+  console.log('Success:', result);
+} catch (error) {
+  // Handle error
+  console.error('Error:', error.message);
+}
+```
+
+### Python
+
+```python
+import requests
+from typing import Dict, Any
+
+def make_api_request(url: str, method: str = 'GET', **kwargs) -> Dict[str, Any]:
+    """Make an API request with proper error handling."""
+    try:
+        response = requests.request(method, url, **kwargs)
+        data = response.json()
+        
+        # Check HTTP status code
+        if not response.ok:
+            if response.status_code == 401:
+                raise Exception('Authentication failed. Please check your API credentials.')
+            elif response.status_code == 429:
+                raise Exception('Rate limit exceeded. Please try again later.')
+            else:
+                error_msg = data.get('error', 'Unknown error')
+                raise Exception(f'HTTP {response.status_code}: {error_msg}')
+        
+        # Check success field in response body
+        if not data.get('success', False):
+            error_msg = data.get('error', 'Request failed')
+            raise Exception(error_msg)
+        
+        return data
+    except requests.exceptions.RequestException as e:
+        raise Exception(f'Network error: {str(e)}')
+
+# Usage
+try:
+    result = make_api_request(
+        'https://api.hookpulse.io/v1/api/add_domain/',
+        method='POST',
+        headers={
+            'x-hookpulse-api-key': 'YOUR_API_KEY',
+            'x-brand-uuid': 'YOUR_BRAND_UUID',
+            'Content-Type': 'application/json'
+        },
+        json={
+            'domain': 'example.com',
+            'protocol_type': 'https'
+        }
+    )
+    print('Success:', result)
+except Exception as e:
+    # Handle error
+    print(f'Error: {str(e)}')
+```
+
+### cURL
+
+```bash
+#!/bin/bash
+
+response=$(curl -s -w "\n%{http_code}" -X POST https://api.hookpulse.io/v1/api/add_domain/ \
+  -H "x-hookpulse-api-key: YOUR_API_KEY" \
+  -H "x-brand-uuid: YOUR_BRAND_UUID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "domain": "example.com",
+    "protocol_type": "https"
+  }')
+
+# Extract HTTP status code and body
+http_code=$(echo "$response" | tail -n1)
+body=$(echo "$response" | sed '$d')
+
+# Parse JSON response
+success=$(echo "$body" | jq -r '.success')
+error=$(echo "$body" | jq -r '.error // empty')
+
+# Handle errors
+if [ "$http_code" != "200" ]; then
+  echo "HTTP Error $http_code: $error"
+  exit 1
+fi
+
+if [ "$success" != "true" ]; then
+  echo "API Error: $error"
+  exit 1
+fi
+
+echo "Success: $body"
+```
+
+## Best Practices
+
+### 1. Always Check the `success` Field
+
+Even when the HTTP status code is `200`, always verify the `success` field:
+
+```javascript
+const response = await fetch(url, options);
+const data = await response.json();
+
+if (!data.success) {
+  // Handle error
+  console.error('Error:', data.error);
+  return;
+}
+
+// Process successful response
+```
+
+### 2. Handle HTTP Status Codes
+
+Check HTTP status codes for network and authentication errors:
+
+```javascript
+if (response.status === 401) {
+  // Re-authenticate or refresh credentials
+} else if (response.status === 429) {
+  // Implement exponential backoff
+} else if (response.status >= 500) {
+  // Retry with exponential backoff
+}
+```
+
+### 3. Implement Retry Logic
+
+For transient errors (5xx, rate limits), implement retry logic with exponential backoff:
+
+```javascript
+async function retryRequest(url, options, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      
+      if (data.success) {
+        return data;
+      }
+      
+      // Don't retry on client errors (4xx)
+      if (response.status >= 400 && response.status < 500) {
+        throw new Error(data.error);
+      }
+      
+      // Retry on server errors (5xx) or rate limits
+      if (i < maxRetries - 1) {
+        const delay = Math.pow(2, i) * 1000; // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      
+      throw new Error(data.error);
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      const delay = Math.pow(2, i) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+```
+
+### 4. Log Errors Appropriately
+
+Log errors with sufficient context for debugging:
+
+```javascript
+try {
+  const result = await apiRequest(url, options);
+} catch (error) {
+  // Log with context
+  console.error('API Error:', {
+    url,
+    method: options.method,
+    error: error.message,
+    timestamp: new Date().toISOString()
+  });
+  
+  // Re-throw or handle appropriately
+  throw error;
+}
+```
+
+### 5. Provide User-Friendly Error Messages
+
+Map technical error messages to user-friendly messages:
+
+```javascript
+const errorMessages = {
+  'Invalid API key': 'Your API credentials are invalid. Please check your API key.',
+  'Rate limit exceeded': 'You\'ve exceeded the rate limit. Please try again in a moment.',
+  'Webhook not found': 'The requested webhook template could not be found.',
+  'Key with same name already in database': 'A secret with this name already exists.',
+};
+
+function getUserFriendlyError(error) {
+  return errorMessages[error] || error || 'An unexpected error occurred.';
+}
+```
+
+### 6. Validate Before Sending
+
+Validate request data before making API calls to catch errors early:
+
+```javascript
+function validateDomainRequest(data) {
+  const errors = [];
+  
+  if (!data.domain) {
+    errors.push('Domain is required');
+  }
+  
+  if (!data.protocol_type) {
+    errors.push('Protocol type is required');
+  }
+  
+  if (data.protocol_type && !['http', 'https'].includes(data.protocol_type)) {
+    errors.push('Protocol type must be "http" or "https"');
+  }
+  
+  return errors;
+}
+
+// Before making API call
+const errors = validateDomainRequest(requestData);
+if (errors.length > 0) {
+  throw new Error(errors.join(', '));
+}
+```
+
+## Error Handling Checklist
+
+When implementing error handling, ensure you:
+
+- [ ] Check HTTP status codes
+- [ ] Verify `success` field in response body
+- [ ] Handle authentication errors (401)
+- [ ] Handle rate limiting (429) with retry logic
+- [ ] Implement retry logic for transient errors (5xx)
+- [ ] Log errors with sufficient context
+- [ ] Provide user-friendly error messages
+- [ ] Validate input before making API calls
+- [ ] Handle network errors (timeouts, connection failures)
+- [ ] Test error scenarios in your application
+
+## Related Documentation
+
+- [API Reference](/api-reference/introduction) - Complete API documentation
+- [Rate Limiting](/api-reference/introduction#rate-limits) - Rate limit information
+- [Authentication](/api-reference/introduction#authentication) - Authentication guide
