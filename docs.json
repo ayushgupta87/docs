@@ -15,6 +15,11 @@
     }
   },
   "openapi": "/api-reference/openapi.json",
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-GR0HN844HN"
+    }
+  },
   "navigation": {
     "tabs": [
       {
