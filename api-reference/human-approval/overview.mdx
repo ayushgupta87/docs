@@ -1,0 +1,250 @@
+---
+title: 'Human Approval Overview'
+---
+
+Human Approval APIs allow you to integrate manual approval steps directly into your automated workflows. When a workflow reaches a human approval step, execution pauses and waits for a human decision (approve or deny) before continuing. This powerful feature makes your automated systems more reliable and gives you complete control over critical decisions.
+
+## What Is Human Approval?
+
+Human Approval is a workflow step that requires manual intervention:
+
+- **Pause Execution**: Workflow pauses at the approval step
+- **Wait for Decision**: System waits for human approval or denial
+- **Resume or Terminate**: Workflow continues or stops based on the decision
+- **Audit Trail**: All approval decisions are logged for compliance
+
+This feature bridges the gap between fully automated workflows and processes that require human judgment or oversight.
+
+## Key Benefits
+
+### 1. Control Over Critical Decisions
+
+Not all decisions should be automated. Human approval gives you control over:
+
+- **Financial Transactions**: Approve large payments or transfers
+- **Data Changes**: Review and approve critical data modifications
+- **User Actions**: Approve sensitive user operations
+- **System Changes**: Control infrastructure or configuration changes
+
+### 2. Reliability and Safety
+
+Human approval adds a safety layer to automated systems:
+
+- **Prevent Errors**: Catch mistakes before they cause problems
+- **Compliance**: Meet regulatory requirements for manual oversight
+- **Risk Management**: Reduce risk in critical operations
+- **Quality Control**: Ensure high-quality outcomes
+
+### 3. Flexibility
+
+Human approval integrates seamlessly into workflows:
+
+- **Any Step**: Add approval at any point in your workflow
+- **Conditional**: Make approval conditional based on workflow data
+- **Multiple Approvals**: Require multiple approvals for extra security
+- **Timeout Handling**: Configure timeouts for approval requests
+
+### 4. Audit and Compliance
+
+Complete audit trail of all approvals:
+
+- **Who Approved**: Track which user made the decision
+- **When Approved**: Timestamp of approval/denial
+- **What Was Approved**: Context and data at time of approval
+- **Compliance Ready**: Meet audit and compliance requirements
+
+## How It Works
+
+### Workflow Execution Flow
+
+```
+1. Workflow Step 1: ✅ Execute
+2. Workflow Step 2: ✅ Execute
+3. Human Approval Step: ⏸️ Pause - Wait for Approval
+   ├─ Approval Request Sent
+   ├─ Human Reviews Request
+   ├─ Human Approves or Denies
+4. Workflow Step 4: ✅ Continue (if approved) or ❌ Stop (if denied)
+```
+
+### Approval Request
+
+When a workflow reaches a human approval step:
+
+1. **Approval Request Created**: System creates an approval request
+2. **Notification Sent**: User receives notification (email, dashboard, etc.)
+3. **Context Provided**: User sees relevant workflow data and context
+4. **Decision Required**: User must approve or deny
+
+### Decision Handling
+
+**If Approved:**
+- Workflow continues to next step
+- Approval decision logged
+- Workflow execution resumes
+
+**If Denied:**
+- Workflow stops (or follows configured failure handling)
+- Denial decision logged
+- Optional notification sent
+
+## Use Cases
+
+### Financial Transactions
+
+```
+Workflow:
+1. Process Payment Request
+2. ⏸️ Human Approval (if amount > $10,000)
+3. Execute Payment
+4. Send Confirmation
+```
+
+**Why:** Large transactions require manual oversight for security and compliance.
+
+### User Account Modifications
+
+```
+Workflow:
+1. Receive Account Change Request
+2. ⏸️ Human Approval (review changes)
+3. Apply Changes
+4. Notify User
+```
+
+**Why:** Sensitive account changes need human review to prevent fraud.
+
+### Content Moderation
+
+```
+Workflow:
+1. Receive Content Submission
+2. ⏸️ Human Approval (review content)
+3. Publish Content
+4. Notify Creator
+```
+
+**Why:** Content quality and compliance require human judgment.
+
+### System Configuration Changes
+
+```
+Workflow:
+1. Receive Configuration Change Request
+2. ⏸️ Human Approval (review impact)
+3. Apply Configuration
+4. Verify Changes
+```
+
+**Why:** Infrastructure changes need careful review to prevent outages.
+
+### Data Deletion
+
+```
+Workflow:
+1. Receive Deletion Request
+2. ⏸️ Human Approval (confirm deletion)
+3. Delete Data
+4. Log Deletion
+```
+
+**Why:** Data deletion is irreversible and requires explicit confirmation.
+
+## Integration with Workflows
+
+### Adding Approval Steps
+
+Human approval steps can be added to workflows:
+
+- **Via Dashboard**: Use visual workflow builder to add approval steps
+- **Via API**: Programmatically add approval steps to workflow templates
+- **Conditional**: Make approval conditional based on workflow variables
+
+### Approval Context
+
+When requesting approval, provide context:
+
+- **Workflow Data**: Relevant variables and data from previous steps
+- **Request Details**: What is being requested
+- **Impact Assessment**: What happens if approved/denied
+- **Supporting Information**: Additional context for decision-making
+
+### Timeout Handling
+
+Configure timeouts for approval requests:
+
+- **Timeout Duration**: How long to wait for approval
+- **Timeout Action**: What to do if timeout expires (deny, retry, escalate)
+- **Reminders**: Send reminders as timeout approaches
+
+## Approval Decision API
+
+Use the Human Approval API to:
+
+- **Get Pending Approvals**: List all pending approval requests
+- **Approve Request**: Approve a specific request
+- **Deny Request**: Deny a specific request
+- **Get Approval History**: View past approval decisions
+- **Cancel Request**: Cancel a pending approval request
+
+## Best Practices
+
+1. **Clear Context**: Provide clear, actionable context in approval requests
+2. **Reasonable Timeouts**: Set appropriate timeout durations
+3. **Multiple Approvers**: Require multiple approvals for critical operations
+4. **Audit Everything**: Log all approval decisions for compliance
+5. **Notification Strategy**: Ensure approvers are notified promptly
+6. **Fallback Handling**: Define behavior for timeouts and denials
+7. **Review Regularly**: Periodically review approval patterns and optimize
+
+## Security Considerations
+
+- **Authentication**: Only authorized users can approve requests
+- **Authorization**: Role-based access control for approvals
+- **Audit Trail**: Complete logging of all approval decisions
+- **Non-Repudiation**: Approval decisions cannot be denied later
+- **Encryption**: Secure transmission of approval requests
+
+## Example Workflow with Approval
+
+```json
+{
+  "workflow_name": "Large Payment Processing",
+  "steps": [
+    {
+      "step": 1,
+      "action": "validate_payment",
+      "type": "webhook"
+    },
+    {
+      "step": 2,
+      "action": "check_amount",
+      "type": "condition",
+      "condition": "amount > 10000"
+    },
+    {
+      "step": 3,
+      "action": "human_approval",
+      "type": "approval",
+      "required": true,
+      "timeout": 3600,
+      "context": {
+        "amount": "{{ amount }}",
+        "recipient": "{{ recipient }}",
+        "reason": "{{ reason }}"
+      }
+    },
+    {
+      "step": 4,
+      "action": "execute_payment",
+      "type": "webhook",
+      "condition": "approval.approved == true"
+    }
+  ]
+}
+```
+
+## Related Documentation
+
+- [Workflow Template Overview](/docs/api-reference/workflow-template/overview) - Learn about workflow templates
+- [Scheduling Overview](/docs/api-reference/scheduling/overview) - Schedule workflows with approval steps

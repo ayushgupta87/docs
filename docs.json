@@ -27,11 +27,48 @@
             ]
           },
           {
+            "group": "System Secret Vault",
+            "pages": [
+              "api-reference/system-secret-vault/overview",
+              "api-reference/system-secret-vault/add-system-secret",
+              "api-reference/system-secret-vault/get-secrets-paginated",
+              "api-reference/system-secret-vault/update-secret-value",
+              "api-reference/system-secret-vault/get-value-of-secret",
+              "api-reference/system-secret-vault/delete-secret"
+            ]
+          },
+          {
             "group": "Domain Setup",
             "pages": [
+              "api-reference/domain-setup/overview",
               "api-reference/domain-setup/add-domain",
               "api-reference/domain-setup/get-domain-paginated",
               "api-reference/domain-setup/get-domain-uuid"
+            ]
+          },
+          {
+            "group": "Webhook Template",
+            "pages": [
+              "api-reference/webhook-template/overview",
+              "api-reference/webhook-template/add-webhook-template"
+            ]
+          },
+          {
+            "group": "Workflow Template",
+            "pages": [
+              "api-reference/workflow-template/overview"
+            ]
+          },
+          {
+            "group": "Scheduling",
+            "pages": [
+              "api-reference/scheduling/overview"
+            ]
+          },
+          {
+            "group": "Human Approval",
+            "pages": [
+              "api-reference/human-approval/overview"
             ]
           }
         ]

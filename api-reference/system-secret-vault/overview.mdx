@@ -1,0 +1,86 @@
+---
+title: 'System Secret Vault Overview'
+---
+
+The System Secret Vault is a secure storage mechanism provided by HookPulse to store sensitive values that are used during webhook execution. These secrets are hidden and get recalculated (computed) at the time of webhook call.
+
+## How It Works
+
+System secrets are stored securely in the HookPulse vault and can be accessed in your webhook templates using a special syntax. When a webhook is executed, HookPulse automatically retrieves and injects the secret values into your webhook requests.
+
+## Template Syntax
+
+To access a system secret in your webhook templates, use the following syntax:
+
+```
+{{ #key }}
+```
+
+Where:
+- `#` is required to indicate this is a system secret
+- `key` is the variable name of the secret stored in the vault
+
+## Usage Examples
+
+### In Request Headers
+
+```json
+{
+  "headers_json": {
+    "Authorization": "Bearer {{ #api_key }}",
+    "X-API-Key": "{{ #service_api_key }}"
+  }
+}
+```
+
+### In Request Body
+
+```json
+{
+  "request_body_json": {
+    "api_token": "{{ #external_service_token }}",
+    "client_secret": "{{ #oauth_client_secret }}"
+  }
+}
+```
+
+### In Query Parameters
+
+```json
+{
+  "query_params_json": {
+    "api_key": "{{ #third_party_api_key }}",
+    "access_token": "{{ #service_access_token }}"
+  }
+}
+```
+
+### In URL Path
+
+```json
+{
+  "path": "/api/{{ #service_id }}/webhook"
+}
+```
+
+## Security Features
+
+- **Encrypted Storage**: All secrets are stored encrypted in the HookPulse vault
+- **Runtime Injection**: Secrets are only retrieved and injected at the time of webhook execution
+- **No Exposure**: Secret values are never exposed in logs, responses, or documentation
+- **Access Control**: Only authenticated users with proper API credentials can manage secrets
+
+## Best Practices
+
+1. **Use Descriptive Names**: Choose clear, descriptive names for your secret keys (e.g., `stripe_api_key` instead of `key1`)
+2. **Rotate Regularly**: Update secret values periodically for enhanced security
+3. **Separate Environments**: Use different secrets for development, staging, and production
+4. **Never Hardcode**: Always use the vault instead of hardcoding sensitive values in your webhook templates
+
+## Related APIs
+
+- [Add System Secret](/docs/api-reference/system-secret-vault/add-system-secret) - Store a new secret in the vault
+- [Get Secrets Paginated](/docs/api-reference/system-secret-vault/get-secrets-paginated) - List all secrets with pagination
+- [Update Secret Value](/docs/api-reference/system-secret-vault/update-secret-value) - Update an existing secret's value
+- [Get Value of Secret](/docs/api-reference/system-secret-vault/get-value-of-secret) - Retrieve a specific secret's value
+- [Delete Secret](/docs/api-reference/system-secret-vault/delete-secret) - Remove a secret from the vault

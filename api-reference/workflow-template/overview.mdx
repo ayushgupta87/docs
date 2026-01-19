@@ -1,0 +1,491 @@
+---
+title: 'Workflow Template Overview'
+---
+
+Workflow Templates are reusable configurations that define multi-step workflows with advanced execution modes, failure handling, and retry strategies. Similar to Webhook Templates, they support template variables and can be executed in FIFO (First-In-First-Out) or concurrent modes, providing flexibility for different use cases.
+
+## What Are Workflow Templates?
+
+A workflow template is a pre-configured sequence of steps that can include:
+- **Multiple webhook calls** or other actions
+- **Execution mode** (FIFO or concurrent)
+- **Failure handling** (stop on failure or continue)
+- **Retry strategies** (retry from initial step or from failed step)
+- **Template variables** for dynamic content
+- **System secret integration** for secure credential management
+
+Workflow templates allow you to orchestrate complex operations while maintaining consistency and reusability across your application.
+
+## Key Benefits
+
+### 1. Strict Ordering with FIFO Mode
+
+FIFO (First-In-First-Out) mode ensures steps execute in strict sequential order:
+
+- **Guaranteed Order**: Steps execute one after another, in the exact order defined
+- **Dependency Management**: Later steps can safely depend on results from earlier steps
+- **Data Consistency**: Ensures data flows correctly through the workflow
+- **Critical Operations**: Perfect for operations where order matters (e.g., payment processing, data transformations)
+
+**Use Cases:**
+- Payment processing workflows
+- Data transformation pipelines
+- Sequential API calls with dependencies
+- Multi-step user onboarding
+
+### 2. Parallel Execution with Concurrent Mode
+
+Concurrent mode allows multiple steps to execute simultaneously:
+
+- **Faster Execution**: Multiple steps run in parallel, reducing total execution time
+- **Independent Operations**: Ideal when steps don't depend on each other
+- **Resource Efficiency**: Better utilization of system resources
+- **Throughput Optimization**: Maximize the number of operations completed per unit time
+
+**Use Cases:**
+- Sending notifications to multiple services simultaneously
+- Parallel data processing
+- Independent API calls
+- Bulk operations
+
+### 3. Failure Handling
+
+Workflow templates support configurable failure behavior:
+
+- **Failure Stop**: Workflow stops immediately when any step fails
+- **Continue on Failure**: Workflow continues executing remaining steps even if one fails
+- **Selective Handling**: Choose which steps are critical and which can fail safely
+
+**Benefits:**
+- **Reliability**: Prevent cascading failures
+- **Partial Success**: Complete non-critical steps even if critical ones fail
+- **Error Isolation**: Isolate failures to specific steps
+- **Better Debugging**: Easier to identify and fix issues
+
+### 4. Retry Strategies
+
+When a step fails, you can choose how to retry:
+
+- **Retry from Initial**: Start the entire workflow from the beginning
+- **Retry from Failed**: Resume from the failed step, preserving completed work
+
+**Retry from Initial Benefits:**
+- Ensures all steps execute with fresh data
+- Useful when steps depend on each other
+- Guarantees consistency
+
+**Retry from Failed Benefits:**
+- More efficient - doesn't re-execute successful steps
+- Faster recovery
+- Preserves completed work
+- Reduces unnecessary API calls
+
+### 5. Execution Step Conditions
+
+Workflow templates support conditional execution of steps based on field values:
+
+- **Conditional Execution**: Steps execute only when conditions are met
+- **Field-Based Logic**: Evaluate workflow data to determine step execution
+- **Multiple Operators**: Support for various comparison operators
+- **Better Workflow Control**: Create dynamic, intelligent workflows that adapt to data
+
+**Benefits:**
+- **Dynamic Workflows**: Steps execute based on actual data values
+- **Efficient Execution**: Skip unnecessary steps when conditions aren't met
+- **Complex Logic**: Build sophisticated workflows with conditional branching
+- **Resource Optimization**: Only execute steps when needed
+
+### 6. Template Variables
+
+Workflow templates support the same powerful variable system as webhook templates:
+
+- **System Secrets**: `{{ #key }}` - Access secrets from System Secret Vault (computed at runtime)
+- **Workflow Variables**: `{{ variable }}` - Pass dynamic values between steps
+- **Step Responses**: `{{ step.response.variable }}` - Access variables from previous workflow steps
+- **Initial Variables**: `{{ initial.variable }}` - Access variables from initial workflow input
+
+## Execution Modes Comparison
+
+| Feature | FIFO Mode | Concurrent Mode |
+|---------|-----------|-----------------|
+| **Execution Order** | Strict sequential | Parallel execution |
+| **Speed** | Slower (sequential) | Faster (parallel) |
+| **Dependencies** | Supports dependencies | Independent steps only |
+| **Use Case** | Critical ordered operations | Independent operations |
+| **Resource Usage** | Lower | Higher |
+| **Error Impact** | Can stop entire workflow | Isolated to individual steps |
+
+## Failure Handling Strategies
+
+### Stop on Failure
+
+When enabled, the workflow stops immediately if any step fails:
+
+```
+Step 1: ✅ Success
+Step 2: ❌ Failure → Workflow Stops
+Step 3: ⏸️ Not Executed
+```
+
+**When to Use:**
+- Critical workflows where all steps must succeed
+- Financial transactions
+- Data integrity requirements
+- Sequential dependencies
+
+### Continue on Failure
+
+When enabled, the workflow continues even if steps fail:
+
+```
+Step 1: ✅ Success
+Step 2: ❌ Failure → Workflow Continues
+Step 3: ✅ Success
+```
+
+**When to Use:**
+- Non-critical operations
+- Independent steps
+- Partial success acceptable
+- Notification workflows
+
+## Retry Strategies
+
+### Retry from Initial
+
+Restarts the entire workflow from the first step:
+
+```
+Attempt 1:
+  Step 1: ✅
+  Step 2: ❌ Failure
+  
+Attempt 2:
+  Step 1: ✅ (re-executed)
+  Step 2: ✅ (re-executed)
+```
+
+**Benefits:**
+- Fresh start with latest data
+- Ensures consistency
+- All dependencies re-evaluated
+
+### Retry from Failed
+
+Resumes from the failed step:
+
+```
+Attempt 1:
+  Step 1: ✅
+  Step 2: ❌ Failure
+  
+Attempt 2:
+  Step 1: ⏭️ Skipped (already succeeded)
+  Step 2: ✅ (retried)
+```
+
+**Benefits:**
+- Efficient - doesn't repeat successful steps
+- Faster recovery
+- Preserves completed work
+
+## Execution Step Conditions
+
+Execution step conditions allow you to control when workflow steps execute based on field values. This provides fine-grained control over workflow execution and enables dynamic, data-driven workflows.
+
+### How It Works
+
+Each workflow step can have one or more execution conditions:
+
+1. **Condition Evaluation**: Before executing a step, conditions are evaluated
+2. **Field Comparison**: Compare a field value against a specified value using an operator
+3. **Conditional Execution**: Step executes only if all conditions evaluate to `true`
+4. **Skip on Failure**: Steps are skipped if conditions aren't met
+
+### Supported Operators
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `eq` | Equal to | `amount eq 100` |
+| `ne` | Not equal to | `status ne "cancelled"` |
+| `lt` | Less than | `quantity lt 10` |
+| `gt` | Greater than | `price gt 1000` |
+| `lte` | Less than or equal to | `age lte 18` |
+| `gte` | Greater than or equal to | `score gte 80` |
+| `in` | Value in array | `status in ["active", "pending"]` |
+| `contains` | String contains substring | `email contains "@example.com"` |
+
+### Condition Structure
+
+Each condition consists of:
+- **Field**: The field path to evaluate (e.g., `amount`, `user.status`, `step.response.payment_id`)
+- **Operator**: The comparison operator (e.g., `eq`, `gt`, `contains`)
+- **Value**: The value to compare against
+
+### Example Conditions
+
+#### Simple Field Comparison
+
+```json
+{
+  "step": 2,
+  "conditions": [
+    {
+      "field": "amount",
+      "operator": "gt",
+      "value": "1000"
+    }
+  ]
+}
+```
+
+**Result**: Step 2 executes only if `amount > 1000`
+
+#### Multiple Conditions (AND Logic)
+
+```json
+{
+  "step": 3,
+  "conditions": [
+    {
+      "field": "status",
+      "operator": "eq",
+      "value": "approved"
+    },
+    {
+      "field": "amount",
+      "operator": "gte",
+      "value": "500"
+    }
+  ]
+}
+```
+
+**Result**: Step 3 executes only if `status == "approved"` AND `amount >= 500`
+
+#### Step Response Condition
+
+```json
+{
+  "step": 4,
+  "conditions": [
+    {
+      "field": "step.response.payment_status",
+      "operator": "eq",
+      "value": "success"
+    }
+  ]
+}
+```
+
+**Result**: Step 4 executes only if the previous step's payment_status is "success"
+
+#### Array Membership Check
+
+```json
+{
+  "step": 5,
+  "conditions": [
+    {
+      "field": "user.role",
+      "operator": "in",
+      "value": ["admin", "manager"]
+    }
+  ]
+}
+```
+
+**Result**: Step 5 executes only if user role is "admin" or "manager"
+
+#### String Contains Check
+
+```json
+{
+  "step": 6,
+  "conditions": [
+    {
+      "field": "email",
+      "operator": "contains",
+      "value": "@company.com"
+    }
+  ]
+}
+```
+
+**Result**: Step 6 executes only if email contains "@company.com"
+
+### Use Cases
+
+#### Conditional Payment Processing
+
+```
+Step 1: Validate Payment
+Step 2: Process Payment (if amount > 1000)
+Step 3: Send High-Value Notification (if amount > 1000)
+Step 4: Send Standard Confirmation (if amount <= 1000)
+```
+
+**Conditions:**
+- Step 2: `amount gt 1000`
+- Step 3: `amount gt 1000`
+- Step 4: `amount lte 1000`
+
+#### Role-Based Workflow Steps
+
+```
+Step 1: Process Request
+Step 2: Admin Review (if user.role eq "admin")
+Step 3: Manager Approval (if user.role in ["admin", "manager"])
+Step 4: Standard Processing
+```
+
+**Conditions:**
+- Step 2: `user.role eq "admin"`
+- Step 3: `user.role in ["admin", "manager"]`
+
+#### Status-Based Branching
+
+```
+Step 1: Check Order Status
+Step 2: Process Refund (if status eq "cancelled")
+Step 3: Ship Order (if status eq "confirmed")
+Step 4: Send Update (if status ne "pending")
+```
+
+**Conditions:**
+- Step 2: `status eq "cancelled"`
+- Step 3: `status eq "confirmed"`
+- Step 4: `status ne "pending"`
+
+#### Previous Step Dependency
+
+```
+Step 1: Validate Payment
+Step 2: Create Order (if step.response.payment_status eq "success")
+Step 3: Send Failure Notification (if step.response.payment_status ne "success")
+```
+
+**Conditions:**
+- Step 2: `step.response.payment_status eq "success"`
+- Step 3: `step.response.payment_status ne "success"`
+
+### Best Practices
+
+1. **Use Clear Field Names**: Use descriptive field names for better readability
+2. **Combine with Failure Handling**: Use conditions with failure handling for robust workflows
+3. **Test Conditions**: Validate conditions with various data scenarios
+4. **Document Logic**: Clearly document why conditions are set
+5. **Avoid Over-Complexity**: Keep conditions simple and understandable
+6. **Use Appropriate Operators**: Choose operators that match your use case
+7. **Consider Performance**: Complex conditions may impact workflow execution time
+
+## Template Variables in Workflows
+
+### System Secret Variables
+
+```json
+{
+  "step_config": {
+    "headers": {
+      "Authorization": "Bearer {{ #api_key }}"
+    }
+  }
+}
+```
+
+### Workflow Variables
+
+```json
+{
+  "step_config": {
+    "body": {
+      "user_id": "{{ user_id }}",
+      "order_id": "{{ order_id }}"
+    }
+  }
+}
+```
+
+### Step Response Variables
+
+Access data from previous steps:
+
+```json
+{
+  "step_config": {
+    "body": {
+      "payment_id": "{{ step.response.payment_id }}",
+      "transaction_status": "{{ step.response.status }}"
+    }
+  }
+}
+```
+
+### Initial Variables
+
+Access initial workflow input:
+
+```json
+{
+  "step_config": {
+    "body": {
+      "customer_email": "{{ initial.email }}",
+      "order_total": "{{ initial.total }}"
+    }
+  }
+}
+```
+
+## Example Use Cases
+
+### E-commerce Order Processing (FIFO Mode)
+
+```
+1. Validate Payment → 2. Reserve Inventory → 3. Create Order → 4. Send Confirmation
+```
+
+- **Mode**: FIFO (strict order required)
+- **Failure Handling**: Stop on failure
+- **Retry**: Retry from initial
+- **Why**: Each step depends on the previous one
+
+### Multi-Channel Notification (Concurrent Mode)
+
+```
+1. Send Email ┐
+2. Send SMS  ├─ Execute Simultaneously
+3. Send Push ┘
+```
+
+- **Mode**: Concurrent (independent operations)
+- **Failure Handling**: Continue on failure
+- **Retry**: Retry from failed
+- **Why**: Steps are independent, partial success acceptable
+
+### Data Pipeline (FIFO Mode)
+
+```
+1. Fetch Data → 2. Transform → 3. Validate → 4. Store → 5. Notify
+```
+
+- **Mode**: FIFO (data transformation pipeline)
+- **Failure Handling**: Stop on failure
+- **Retry**: Retry from initial
+- **Why**: Data integrity and consistency required
+
+## Best Practices
+
+1. **Choose the Right Mode**: Use FIFO for dependencies, concurrent for independence
+2. **Configure Failure Handling**: Set stop on failure for critical workflows
+3. **Optimize Retry Strategy**: Use "retry from failed" for efficiency, "retry from initial" for consistency
+4. **Use Execution Conditions**: Leverage step conditions for dynamic, intelligent workflows
+5. **Use Template Variables**: Leverage secrets and variables for flexibility
+6. **Test Workflows**: Validate workflows in staging before production, including all condition branches
+7. **Monitor Performance**: Track execution times and success rates
+8. **Document Dependencies**: Clearly document step dependencies and conditions in workflow descriptions
+
+## Related Documentation
+
+- [Webhook Template Overview](/docs/api-reference/webhook-template/overview) - Learn about webhook templates
+- [System Secret Vault Overview](/docs/api-reference/system-secret-vault/overview) - Manage secrets for workflows
+- [Scheduling Overview](/docs/api-reference/scheduling/overview) - Schedule workflows to run automatically

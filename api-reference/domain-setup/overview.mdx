@@ -1,0 +1,123 @@
+---
+title: 'Domain Setup Overview'
+---
+
+Domain Setup APIs allow you to configure and manage domains for your webhook endpoints. These APIs provide separate controls for **concurrency** and **rate limiting** to protect both your infrastructure and your client servers from overload.
+
+## What Are Domains?
+
+A domain represents a target server or endpoint where your webhooks will be delivered. When you add a domain to HookPulse, you configure how webhook requests to that domain should be managed, including rate limiting and concurrency control settings.
+
+## Concurrency Control
+
+**Concurrency control** limits the number of simultaneous webhook requests that can be sent to a specific domain at any given time.
+
+### How It Works
+
+- When enabled, HookPulse maintains a queue of webhook requests
+- Only a specified number of requests (`max_concurrent_jobs`) are processed simultaneously
+- Additional requests wait in the queue until a slot becomes available
+- This ensures your client server is never overwhelmed by too many concurrent connections
+
+### Benefits
+
+1. **Protects Client Servers**: Prevents overwhelming your client's infrastructure with too many simultaneous requests
+2. **Prevents Timeouts**: Reduces the likelihood of connection timeouts and server errors
+3. **Better Resource Management**: Allows client servers to process requests at their optimal capacity
+4. **Prevents Cascading Failures**: Avoids situations where too many concurrent requests cause server crashes
+
+### Example Scenario
+
+If your client server can handle 5 concurrent connections, setting `max_concurrent_jobs: 5` ensures HookPulse never sends more than 5 simultaneous requests, even if you have 100 webhooks queued.
+
+## Rate Limiting
+
+**Rate limiting** controls the maximum number of webhook requests that can be sent to a domain per second.
+
+### How It Works
+
+- When enabled, HookPulse enforces a maximum requests-per-second limit (`max_requests_per_second`)
+- Requests exceeding this limit are queued and sent at the allowed rate
+- This creates a smooth, controlled flow of requests to your client server
+
+### Benefits
+
+1. **Prevents Server Overload**: Protects client servers from sudden spikes in request volume
+2. **Complies with API Limits**: Helps you stay within your client's API rate limits
+3. **Reduces Rejection Rates**: Minimizes the chance of requests being rejected due to rate limit violations
+4. **Smoother Traffic Patterns**: Creates predictable, manageable traffic patterns
+5. **Cost Optimization**: Prevents unnecessary retries and failed requests
+
+### Example Scenario
+
+If your client's API allows 10 requests per second, setting `max_requests_per_second: 10` ensures HookPulse never exceeds this limit, even during high-traffic periods.
+
+## Enabling and Disabling Controls
+
+Both concurrency control and rate limiting can be **turned on or off** independently for each domain:
+
+- **`rate_limit_enabled`**: Set to `true` to enable rate limiting, `false` to disable
+- **`concurrency_control_enabled`**: Set to `true` to enable concurrency control, `false` to disable
+
+### When to Disable
+
+You might disable these controls if:
+- Your client server has unlimited capacity
+- You're testing in a development environment
+- You need maximum throughput and are confident in your infrastructure
+
+### When to Enable
+
+Always enable these controls when:
+- Working with production systems
+- Your client has documented rate limits
+- You want to protect your client's infrastructure
+- You need predictable, controlled webhook delivery
+
+## Protection Benefits
+
+### For Your Infrastructure
+
+- **Prevents Backpressure**: Rate limiting prevents your system from being overwhelmed by retry attempts
+- **Resource Efficiency**: Concurrency control ensures optimal use of connection pools
+- **Cost Management**: Reduces unnecessary API calls and bandwidth usage
+
+### For Client Servers
+
+- **Prevents Overload**: Protects client infrastructure from being overwhelmed
+- **Maintains Performance**: Ensures client servers can process requests efficiently
+- **Reduces Errors**: Minimizes 429 (Too Many Requests) and 503 (Service Unavailable) errors
+- **Better User Experience**: Prevents service degradation for end users
+
+## Configuration Best Practices
+
+1. **Start Conservative**: Begin with lower limits and increase based on monitoring
+2. **Monitor Performance**: Track success rates and adjust limits accordingly
+3. **Match Client Limits**: Set your limits slightly below your client's documented limits
+4. **Test in Staging**: Validate your configuration in a staging environment first
+5. **Review Regularly**: Periodically review and adjust limits based on traffic patterns
+
+## Example Configuration
+
+```json
+{
+  "protocol_type": "https",
+  "domain": "api.example.com",
+  "rate_limit_enabled": true,
+  "concurrency_control_enabled": true,
+  "max_concurrent_jobs": 5,
+  "max_requests_per_second": 10
+}
+```
+
+This configuration:
+- Enables both rate limiting and concurrency control
+- Allows up to 5 simultaneous requests
+- Limits to 10 requests per second
+- Protects both your infrastructure and the client server
+
+## Related APIs
+
+- [Add Domain](/docs/api-reference/domain-setup/add-domain) - Configure a new domain with rate limiting and concurrency settings
+- [Get Domain Paginated](/docs/api-reference/domain-setup/get-domain-paginated) - List all configured domains with pagination
+- [Get Domain UUID](/docs/api-reference/domain-setup/get-domain-uuid) - Retrieve the UUID for a specific domain

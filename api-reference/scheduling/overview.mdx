@@ -1,0 +1,299 @@
+---
+title: 'Scheduling Overview'
+---
+
+HookPulse provides powerful, out-of-the-box scheduling capabilities that allow you to automate workflows and webhooks at specific times, intervals, or based on solar events. With a flexible rule engine, you can create complex scheduling patterns with exclusions, time windows, and termination conditions.
+
+## What Is Scheduling?
+
+Scheduling in HookPulse allows you to automatically trigger workflows or webhooks based on:
+- **Time-based schedules** (intervals, cron expressions, specific clock times)
+- **Solar events** (sunrise, sunset, dawn, dusk)
+- **Rule-based exclusions** (specific dates, days, months, time windows)
+- **Termination conditions** (maximum runs, expiration dates)
+
+Schedules are associated with workflows or webhooks and execute automatically according to your configuration.
+
+## Scheduling Types
+
+### 1. Interval Scheduling
+
+Execute workflows/webhooks at regular intervals:
+
+- **Interval Value**: Number of units (e.g., 5)
+- **Interval Period**: Unit of time (`second`, `minute`, `hour`)
+- **Examples**: Every 5 minutes, every 2 hours, every 30 seconds
+
+**Use Cases:**
+- Periodic data synchronization
+- Health checks
+- Regular reports
+- Cache refresh
+
+**Example:**
+```
+Interval: 15 minutes
+Triggers: 12:00, 12:15, 12:30, 12:45, 13:00...
+```
+
+### 2. Cron Scheduling
+
+Execute workflows/webhooks using cron expressions:
+
+- **Cron Expression**: Standard cron syntax (e.g., `0 9 * * *` for daily at 9 AM)
+- **Timezone**: Specify timezone for accurate execution
+- **Flexibility**: Supports complex time patterns
+
+**Use Cases:**
+- Daily reports at specific times
+- Weekly maintenance tasks
+- Monthly data processing
+- Complex recurring schedules
+
+**Example:**
+```
+Cron: 0 9 * * 1-5 (Every weekday at 9 AM)
+Timezone: America/New_York
+```
+
+### 3. Clocked Scheduling
+
+Execute workflows/webhooks at a specific date and time:
+
+- **Clocked Run At**: Exact datetime for execution
+- **Timezone**: Timezone for the scheduled time
+- **One-Off Task**: Automatically set as a one-time execution
+
+**Use Cases:**
+- One-time scheduled tasks
+- Future-dated operations
+- Scheduled maintenance windows
+- Time-specific events
+
+**Example:**
+```
+Clocked Run At: 2024-12-25 00:00:00
+Timezone: UTC
+Type: One-off task
+```
+
+### 4. Solar Scheduling
+
+Execute workflows/webhooks based on solar events:
+
+- **Solar Events**: sunrise, sunset, civil_dawn, civil_dusk, nautical_dawn, nautical_dusk, astronomical_dawn, astronomical_dusk
+- **Latitude/Longitude**: Geographic coordinates for accurate calculations
+- **Offset Seconds**: Optional offset to adjust timing
+
+**Use Cases:**
+- Outdoor lighting control
+- Solar panel management
+- Weather-dependent operations
+- Location-based automation
+
+**Example:**
+```
+Solar Event: sunrise
+Latitude: 40.7128
+Longitude: -74.0060
+Offset: +1800 seconds (30 minutes after sunrise)
+```
+
+### 5. Debounce Scheduling
+
+Execute workflows/webhooks with debounce logic:
+
+- **Debounce Seconds**: Delay before execution (1 to 86,400 seconds)
+- **Prevents Rapid Triggers**: Waits for a quiet period before executing
+- **Useful for**: Event-driven workflows that need to wait for activity to settle
+
+**Use Cases:**
+- User activity monitoring
+- File upload processing
+- Form submission handling
+- Event aggregation
+
+## Rule Engine
+
+HookPulse's powerful rule engine allows you to add conditions and exclusions to your schedules:
+
+### Time Window Rules
+
+Restrict execution to specific time ranges:
+
+- **Start Time**: Beginning of allowed time window
+- **End Time**: End of allowed time window
+- **Timezone**: Timezone for the time window
+
+**Example:**
+```
+Rule: Time Window
+Start: 09:00
+End: 17:00
+Timezone: America/New_York
+Result: Only executes between 9 AM and 5 PM EST
+```
+
+### Calendar Window Rules
+
+Restrict execution to specific days and months:
+
+- **Allow Days**: Array of day numbers (1-31)
+- **Allow Months**: Array of month numbers (1-12)
+
+**Example:**
+```
+Rule: Calendar Window
+Allow Days: [1, 15] (1st and 15th of month)
+Allow Months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] (All months)
+Result: Executes on 1st and 15th of every month
+```
+
+### Solar Window Rules
+
+Restrict execution to solar event windows:
+
+- **Solar Start Event**: Beginning solar event
+- **Solar End Event**: Ending solar event
+- **Latitude/Longitude**: Coordinates for calculations
+
+**Example:**
+```
+Rule: Solar Window
+Start Event: civil_dawn
+End Event: civil_dusk
+Latitude: 40.7128
+Longitude: -74.0060
+Result: Only executes during daylight hours
+```
+
+### Exclusion Rules
+
+Exclude specific dates from execution:
+
+- **Exclusion Dates**: Array of dates to skip
+
+**Example:**
+```
+Rule: Exclusion
+Exclusion Dates: [2024-12-25, 2025-01-01]
+Result: Skips execution on Christmas and New Year's Day
+```
+
+### Termination Rules
+
+Automatically stop schedules after conditions are met:
+
+- **Max Runs**: Maximum number of times to execute
+- **Expire At**: Specific date/time to stop execution
+
+**Example:**
+```
+Rule: Termination
+Max Runs: 100
+Result: Stops after 100 executions
+
+OR
+
+Rule: Termination
+Expire At: 2025-12-31 23:59:59
+Result: Stops at end of year
+```
+
+## Schedule Status
+
+Schedules can have different statuses:
+
+- **active**: Schedule is running and executing
+- **inactive**: Schedule is disabled
+- **paused**: Schedule is temporarily paused
+- **completed**: Schedule has completed (one-off tasks)
+- **expired**: Schedule has expired (termination rule met)
+
+## Template Variables in Schedules
+
+Schedules support template variables in their initial context:
+
+- **System Secrets**: `{{ #key }}` - Access secrets from vault
+- **Variables**: `{{ variable }}` - Pass dynamic values
+- **Initial Context**: Variables available to the workflow/webhook when scheduled
+
+## Out-of-the-Box Features
+
+HookPulse scheduling comes with:
+
+✅ **Multiple Schedule Types**: Interval, Cron, Clocked, Solar, Debounce  
+✅ **Flexible Rule Engine**: Time windows, calendar windows, exclusions, terminations  
+✅ **Timezone Support**: Full IANA timezone support for accurate scheduling  
+✅ **Solar Calculations**: Accurate solar event calculations based on coordinates  
+✅ **One-Off Tasks**: Support for single-execution schedules  
+✅ **Status Management**: Active, inactive, paused, completed, expired states  
+✅ **Template Variables**: Dynamic content in scheduled workflows  
+✅ **Debounce Logic**: Prevent rapid-fire executions  
+✅ **Automatic Calculations**: Next run times calculated automatically  
+
+## Example Scenarios
+
+### Daily Business Hours Report
+
+```
+Schedule Type: Cron
+Cron Expression: 0 9 * * 1-5 (Every weekday at 9 AM)
+Rule: Time Window (09:00 - 17:00)
+Timezone: America/New_York
+```
+
+### Monthly Billing on 1st and 15th
+
+```
+Schedule Type: Cron
+Cron Expression: 0 0 1,15 * * (1st and 15th at midnight)
+Rule: Calendar Window (Days: [1, 15])
+Timezone: UTC
+```
+
+### Sunrise-Based Lighting Control
+
+```
+Schedule Type: Solar
+Solar Event: sunrise
+Latitude: 40.7128
+Longitude: -74.0060
+Offset: 0 seconds
+Rule: Solar Window (sunrise to sunset)
+```
+
+### Hourly Health Check (Business Hours Only)
+
+```
+Schedule Type: Interval
+Interval: 1 hour
+Rule: Time Window (09:00 - 17:00, Monday-Friday)
+Timezone: America/New_York
+```
+
+### One-Time Scheduled Maintenance
+
+```
+Schedule Type: Clocked
+Clocked Run At: 2024-12-25 02:00:00
+Timezone: UTC
+Status: One-off task
+```
+
+## Best Practices
+
+1. **Choose Appropriate Schedule Type**: Match schedule type to your use case
+2. **Use Timezones Correctly**: Always specify timezones for accurate execution
+3. **Combine Rules**: Use multiple rules for complex scheduling patterns
+4. **Set Termination Conditions**: Prevent infinite schedules with termination rules
+5. **Test Schedules**: Validate schedules in staging before production
+6. **Monitor Execution**: Track schedule execution and success rates
+7. **Use Exclusion Rules**: Exclude holidays and maintenance windows
+8. **Optimize Intervals**: Balance frequency with resource usage
+
+## Related Documentation
+
+- [Workflow Template Overview](/docs/api-reference/workflow-template/overview) - Learn about workflow templates
+- [Webhook Template Overview](/docs/api-reference/webhook-template/overview) - Learn about webhook templates
+- [System Secret Vault Overview](/docs/api-reference/system-secret-vault/overview) - Manage secrets for scheduled workflows

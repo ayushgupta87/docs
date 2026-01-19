@@ -1,0 +1,297 @@
+---
+title: 'Webhook Template Overview'
+---
+
+Webhook Templates are reusable configurations that define how webhooks should be sent to your endpoints. Once created, templates can be referenced by their `webhook-uuid` and reused across multiple workflows, making webhook management efficient and developer-friendly.
+
+## What Are Webhook Templates?
+
+A webhook template is a pre-configured webhook definition that includes:
+- **HTTP method and path** for the target endpoint
+- **Request body, headers, and query parameters** (with support for dynamic variables)
+- **Retry logic** (delay, backoff mode, max retries)
+- **Timeout settings**
+- **Domain association** for rate limiting and concurrency control
+
+Instead of configuring webhook details every time, you create a template once and reuse it by referencing its UUID.
+
+## Key Benefits
+
+### 1. Reusability
+
+Create a template once and use it across multiple workflows or scenarios:
+
+```
+Template: "Send Order Notification"
+UUID: abc-123-def-456
+
+Use in:
+- Order creation workflow
+- Order update workflow  
+- Order cancellation workflow
+```
+
+### 2. Consistency
+
+Ensure all webhooks follow the same structure, retry logic, and timeout settings across your application.
+
+### 3. Easy Updates
+
+Update a template once, and all workflows using it automatically inherit the changes.
+
+### 4. Developer-Friendly
+
+Templates abstract away complex webhook configuration, allowing developers to focus on business logic rather than HTTP details.
+
+### 5. Visual Management
+
+Use the HookPulse dashboard's visual tools to create and manage templates without writing code, or use APIs for programmatic control.
+
+## Template Variables
+
+Webhook templates support dynamic variable substitution, making them flexible and powerful.
+
+### System Secret Vault Variables
+
+Access secrets from the System Secret Vault using:
+
+```
+{{ #key }}
+```
+
+**How it works:**
+- The `#` symbol indicates this is a system secret
+- `key` is the name of the secret stored in your vault
+- Secrets are **computed at runtime** when the webhook is executed
+- Values are never exposed in logs or responses
+
+**Example:**
+```json
+{
+  "headers_json": {
+    "Authorization": "Bearer {{ #api_key }}",
+    "X-API-Key": "{{ #service_api_key }}"
+  }
+}
+```
+
+### Workflow Variables
+
+Pass dynamic values from your workflow using:
+
+```
+{{ variable }}
+```
+
+**How it works:**
+- `variable` can be any variable name from your workflow context
+- Values are injected at runtime from your workflow execution
+- Supports nested properties (e.g., `{{ user.email }}`)
+
+**Example:**
+```json
+{
+  "request_body_json": {
+    "user_id": "{{ user_id }}",
+    "order_id": "{{ order_id }}",
+    "email": "{{ customer_email }}"
+  }
+}
+```
+
+### Variable Usage Locations
+
+Template variables can be used in:
+
+- **Request Body** (`request_body_json`): Any field value
+- **Headers** (`headers_json`): Header values
+- **Query Parameters** (`query_params_json`): Query parameter values
+- **URL Path** (`path`): Dynamic path segments
+
+**Example with all locations:**
+```json
+{
+  "method": "POST",
+  "path": "/api/users/{{ user_id }}/notifications",
+  "request_body_json": {
+    "message": "Hello {{ user_name }}",
+    "order_id": "{{ order_id }}"
+  },
+  "headers_json": {
+    "Authorization": "Bearer {{ #api_key }}",
+    "X-User-ID": "{{ user_id }}"
+  },
+  "query_params_json": {
+    "timestamp": "{{ created_at }}",
+    "source": "{{ source }}"
+  }
+}
+```
+
+## Creating Templates
+
+### Option 1: Dashboard (Visual Tools)
+
+Use the HookPulse dashboard to create templates with a user-friendly interface:
+
+1. Navigate to the **Webhooks** tab in your dashboard
+2. Click **Create Template** or **Add Template**
+3. Fill in the form fields:
+   - Webhook name and description
+   - HTTP method and path
+   - Request body, headers, and query parameters
+   - Retry settings and timeout
+   - Domain selection
+4. Use the visual editor to add template variables
+5. Save the template and get the `webhook-uuid`
+
+**Benefits:**
+- No coding required
+- Visual validation
+- Easy testing
+- Quick iteration
+
+### Option 2: API
+
+Use the [Add Webhook Template API](/docs/api-reference/webhook-template/add-webhook-template) for programmatic template creation:
+
+```bash
+curl -X POST https://api.hookpulse.io/v1/api/add_webhook_template/ \
+  -H "x-hookpulse-api-key: YOUR_API_KEY" \
+  -H "x-brand-uuid: YOUR_BRAND_UUID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_name": "Order Notification",
+    "method": "POST",
+    "path": "/api/orders/{{ order_id }}",
+    "domain_uuid": "your-domain-uuid",
+    "request_body_json": {
+      "order_id": "{{ order_id }}",
+      "status": "{{ status }}"
+    },
+    "headers_json": {
+      "Authorization": "Bearer {{ #api_key }}"
+    }
+  }'
+```
+
+**Benefits:**
+- Automation-friendly
+- Version control integration
+- CI/CD pipeline support
+- Bulk template creation
+
+## Using Templates
+
+Once created, templates are referenced by their `webhook-uuid` in your workflows:
+
+```json
+{
+  "webhook_uuid": "abc-123-def-456",
+  "variables": {
+    "order_id": "12345",
+    "user_id": "67890",
+    "status": "completed"
+  }
+}
+```
+
+HookPulse will:
+1. Retrieve the template configuration
+2. Substitute all template variables with actual values
+3. Compute system secrets from the vault
+4. Execute the webhook with retry logic and timeout handling
+
+## Retry Logic
+
+Templates support configurable retry behavior:
+
+- **Retry Delay**: Time to wait between retry attempts (in seconds)
+- **Retry Backoff Mode**: 
+  - `linear`: Fixed delay between retries
+  - `exponential`: Increasing delay between retries
+- **Max Retries**: Maximum number of retry attempts
+- **Request Timeout**: Maximum time to wait for a response (in milliseconds)
+
+This ensures reliable webhook delivery even when endpoints are temporarily unavailable.
+
+## Domain Association
+
+Each template is associated with a domain, which provides:
+
+- **Rate Limiting**: Controls requests per second
+- **Concurrency Control**: Limits simultaneous requests
+- **Consistent Configuration**: All templates for a domain share the same rate/concurrency settings
+
+## Best Practices
+
+1. **Use Descriptive Names**: Choose clear template names (e.g., "Send Order Confirmation Email")
+2. **Document Variables**: Include descriptions of required variables in the template description
+3. **Test Templates**: Validate templates in staging before production use
+4. **Version Control**: Keep track of template changes, especially when using APIs
+5. **Secure Secrets**: Always use `{{ #key }}` syntax for sensitive values, never hardcode
+6. **Optimize Retries**: Set appropriate retry delays and max retries based on your endpoint's reliability
+7. **Monitor Performance**: Track success rates and adjust timeout/retry settings accordingly
+
+## Example Use Cases
+
+### E-commerce Order Processing
+
+```json
+{
+  "webhook_name": "Order Created Notification",
+  "path": "/api/orders/{{ order_id }}",
+  "request_body_json": {
+    "order_id": "{{ order_id }}",
+    "customer_email": "{{ customer_email }}",
+    "total_amount": "{{ total_amount }}"
+  },
+  "headers_json": {
+    "Authorization": "Bearer {{ #ecommerce_api_key }}"
+  }
+}
+```
+
+### User Authentication Webhooks
+
+```json
+{
+  "webhook_name": "User Login Notification",
+  "path": "/auth/webhooks/login",
+  "request_body_json": {
+    "user_id": "{{ user_id }}",
+    "login_time": "{{ timestamp }}",
+    "ip_address": "{{ ip_address }}"
+  },
+  "headers_json": {
+    "X-API-Key": "{{ #auth_service_key }}"
+  }
+}
+```
+
+### Payment Processing
+
+```json
+{
+  "webhook_name": "Payment Status Update",
+  "path": "/payments/{{ payment_id }}/status",
+  "request_body_json": {
+    "payment_id": "{{ payment_id }}",
+    "status": "{{ payment_status }}",
+    "amount": "{{ amount }}"
+  },
+  "headers_json": {
+    "Authorization": "Bearer {{ #payment_api_key }}",
+    "X-Merchant-ID": "{{ merchant_id }}"
+  }
+}
+```
+
+## Related APIs
+
+- [Add Webhook Template](/docs/api-reference/webhook-template/add-webhook-template) - Create a new webhook template via API
+
+## Related Documentation
+
+- [System Secret Vault Overview](/docs/api-reference/system-secret-vault/overview) - Learn about storing and using secrets
+- [Domain Setup Overview](/docs/api-reference/domain-setup/overview) - Configure rate limiting and concurrency control

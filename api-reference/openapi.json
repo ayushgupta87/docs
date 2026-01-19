@@ -294,6 +294,236 @@
           }
         }
       }
+    },
+    "/v1/api/add_webhook_template/": {
+      "post": {
+        "description": "Create a new webhook template with configurable retry logic, timeout settings, and template variable support",
+        "requestBody": {
+          "description": "Webhook template configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWebhookTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook template created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWebhookTemplateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_system_secret/": {
+      "post": {
+        "description": "Add a new secret to the System Secret Vault for use in webhook templates",
+        "requestBody": {
+          "description": "Secret configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSystemSecretRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Secret added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddSystemSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (e.g., key already exists)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddSystemSecretErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_secrets_paginated/": {
+      "get": {
+        "description": "Retrieve a paginated list of all system secrets stored in your vault",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to retrieve (starts from 1)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSecretsPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/update_secret_value/": {
+      "post": {
+        "description": "Update the value of an existing system secret in the vault",
+        "requestBody": {
+          "description": "Secret update configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSecretValueRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Secret value updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSecretValueResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_value_of_secret/": {
+      "post": {
+        "description": "Retrieve the value and details of a specific system secret by its UUID",
+        "requestBody": {
+          "description": "Secret lookup request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetValueOfSecretRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetValueOfSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/delete_secret/": {
+      "delete": {
+        "description": "Delete a system secret from the vault",
+        "requestBody": {
+          "description": "Secret deletion request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSecretRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Secret deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or deletion failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSecretErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -562,6 +792,317 @@
           "domain_uuid": {
             "type": "string",
             "description": "Unique identifier for the domain"
+          }
+        }
+      },
+      "AddWebhookTemplateRequest": {
+        "required": [
+          "webhook_name",
+          "webhook_description",
+          "method",
+          "path",
+          "domain_uuid",
+          "retry_delay",
+          "retry_backoff_mode",
+          "max_retries",
+          "request_timeout_in_milliseconds",
+          "request_body_json",
+          "headers_json",
+          "query_params_json"
+        ],
+        "type": "object",
+        "properties": {
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook template"
+          },
+          "webhook_description": {
+            "type": "string",
+            "description": "Description of the webhook template"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')",
+            "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
+          },
+          "path": {
+            "type": "string",
+            "description": "URL path for the webhook (supports template variables)"
+          },
+          "domain_uuid": {
+            "type": "string",
+            "description": "UUID of the domain associated with this webhook template"
+          },
+          "retry_delay": {
+            "type": "integer",
+            "description": "Delay in seconds between retry attempts"
+          },
+          "retry_backoff_mode": {
+            "type": "string",
+            "description": "Retry backoff strategy",
+            "enum": ["linear", "exponential"]
+          },
+          "max_retries": {
+            "type": "integer",
+            "description": "Maximum number of retry attempts"
+          },
+          "request_timeout_in_milliseconds": {
+            "type": "integer",
+            "description": "Request timeout in milliseconds"
+          },
+          "request_body_json": {
+            "type": "object",
+            "description": "Request body as JSON object (supports template variables)"
+          },
+          "headers_json": {
+            "type": "object",
+            "description": "HTTP headers as JSON object (supports template variables)"
+          },
+          "query_params_json": {
+            "type": "object",
+            "description": "Query parameters as JSON object (supports template variables)"
+          }
+        }
+      },
+      "AddWebhookTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "webhook_template_id": {
+            "type": "string",
+            "description": "Unique identifier for the created webhook template"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message or error details"
+          }
+        }
+      },
+      "AddSystemSecretRequest": {
+        "required": [
+          "secret_key",
+          "secret_value"
+        ],
+        "type": "object",
+        "properties": {
+          "secret_key": {
+            "type": "string",
+            "description": "Unique identifier/key name for the secret"
+          },
+          "secret_value": {
+            "type": "string",
+            "description": "The secret value to store"
+          }
+        }
+      },
+      "AddSystemSecretResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "AddSystemSecretErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "secret_uuid": {
+            "type": "string",
+            "description": "UUID of the existing secret"
+          }
+        }
+      },
+      "GetSecretsPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretListItem"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "SecretListItem": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The secret key name"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the secret was created"
+          },
+          "call_key": {
+            "type": "string",
+            "description": "Template syntax to use this secret in webhooks (e.g., '{{ ##key }}')"
+          },
+          "system_secret_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the secret"
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of secrets"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of items per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages"
+          },
+          "has_next": {
+            "type": "boolean",
+            "description": "Whether there is a next page"
+          },
+          "has_prev": {
+            "type": "boolean",
+            "description": "Whether there is a previous page"
+          }
+        }
+      },
+      "UpdateSecretValueRequest": {
+        "required": [
+          "secret_uuid",
+          "secret_updated_value"
+        ],
+        "type": "object",
+        "properties": {
+          "secret_uuid": {
+            "type": "string",
+            "description": "UUID of the secret to update"
+          },
+          "secret_updated_value": {
+            "type": "string",
+            "description": "New value for the secret"
+          }
+        }
+      },
+      "UpdateSecretValueResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "GetValueOfSecretRequest": {
+        "required": [
+          "secret_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "secret_uuid": {
+            "type": "string",
+            "description": "UUID of the secret to retrieve"
+          }
+        }
+      },
+      "GetValueOfSecretResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SecretDetails"
+          }
+        }
+      },
+      "SecretDetails": {
+        "type": "object",
+        "properties": {
+          "secret_key": {
+            "type": "string",
+            "description": "The secret key name"
+          },
+          "secret_value": {
+            "type": "string",
+            "description": "The actual secret value"
+          },
+          "call_key": {
+            "type": "string",
+            "description": "Template syntax to use this secret in webhooks (e.g., '{{ #secret_key }}')"
+          },
+          "secret_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the secret"
+          }
+        }
+      },
+      "DeleteSecretRequest": {
+        "required": [
+          "secret_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "secret_uuid": {
+            "type": "string",
+            "description": "UUID of the secret to delete"
+          }
+        }
+      },
+      "DeleteSecretResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "DeleteSecretErrorResponse": {
+        "type": "object",
+        "properties": {
+          "secret_uuid": {
+            "type": "string",
+            "description": "UUID of the secret"
           }
         }
       }
