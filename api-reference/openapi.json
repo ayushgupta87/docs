@@ -60,8 +60,8 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
+                  "type": "array",
+                  "items": {
                         "$ref": "#/components/schemas/Resource"
                       }
                     },
@@ -169,10 +169,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AddDomainRequest"
-              }
-            }
-          }
-        },
+        }
+      }
+    }
+  },
         "responses": {
           "200": {
             "description": "Domain added successfully",
@@ -487,6 +487,198 @@
         }
       }
     },
+    "/v1/api/add_workflow_template/": {
+      "post": {
+        "description": "Create a new workflow template with FIFO or concurrent execution mode",
+        "requestBody": {
+          "description": "Workflow template configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWorkflowTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workflow template created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWorkflowTemplateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (e.g., workflow with same name already exists)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWorkflowTemplateErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_workflow_template_paginated/": {
+      "get": {
+        "description": "Retrieve a paginated list of all workflow templates in your HookPulse account",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to retrieve (starts from 1)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkflowTemplatePaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_workflow_template_uuid/": {
+      "post": {
+        "description": "Retrieve the UUID of a workflow template by providing its name",
+        "requestBody": {
+          "description": "Workflow template name",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetWorkflowTemplateUuidRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkflowTemplateUuidResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or workflow not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_workflow_step/": {
+      "post": {
+        "description": "Add a webhook step to an existing workflow template",
+        "requestBody": {
+          "description": "Workflow step configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWorkflowStepRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workflow step added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddWorkflowStepResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/single_workflow_template_detail/": {
+      "post": {
+        "description": "Retrieve detailed information about a specific workflow template by its UUID, including all workflow steps",
+        "requestBody": {
+          "description": "Workflow template UUID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetWorkflowTemplateDetailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkflowTemplateDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or workflow not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/add_system_secret/": {
       "post": {
         "description": "Add a new secret to the System Secret Vault for use in webhook templates",
@@ -714,11 +906,11 @@
         }
       },
       "CreateResource": {
-        "required": [
+            "required": [
           "name"
-        ],
-        "type": "object",
-        "properties": {
+            ],
+            "type": "object",
+            "properties": {
           "name": {
             "description": "Name of the resource",
             "type": "string"
@@ -733,7 +925,7 @@
         "type": "object",
         "properties": {
           "limit": {
-            "type": "integer",
+                "type": "integer",
             "description": "Number of items per page"
           },
           "offset": {
@@ -1501,6 +1693,460 @@
           "secret_uuid": {
             "type": "string",
             "description": "UUID of the secret"
+          }
+        }
+      },
+      "AddWorkflowTemplateRequest": {
+        "required": [
+          "workflow_name",
+          "workflow_description",
+          "runtype"
+        ],
+        "type": "object",
+        "properties": {
+          "workflow_name": {
+            "type": "string",
+            "description": "Name of the workflow template"
+          },
+          "workflow_description": {
+            "type": "string",
+            "description": "Description of the workflow template"
+          },
+          "runtype": {
+            "type": "string",
+            "enum": [
+              "fifo_sequential",
+              "concurrently"
+            ],
+            "description": "Execution mode: 'fifo_sequential' for strict sequential order, 'concurrently' for parallel execution (note: in concurrent mode, only system variables are evaluated; initial.variable, response, and header variables are not available)"
+          }
+        }
+      },
+      "AddWorkflowTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          },
+          "worflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the created workflow template"
+          }
+        }
+      },
+      "AddWorkflowTemplateErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful (false in error case)"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "UUID of the existing workflow with the same name"
+          }
+        }
+      },
+      "GetWorkflowTemplatePaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowTemplateListItem"
+            },
+            "description": "Array of workflow template objects"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "WorkflowTemplateListItem": {
+        "type": "object",
+        "properties": {
+          "workflow_name": {
+            "type": "string",
+            "description": "Name of the workflow template"
+          },
+          "runtype": {
+            "type": "string",
+            "enum": [
+              "fifo_sequential",
+              "concurrently"
+            ],
+            "description": "Execution mode: 'fifo_sequential' for strict sequential order, 'concurrently' for parallel execution"
+          },
+          "workflow_description": {
+            "type": "string",
+            "description": "Description of the workflow template"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow template"
+          },
+          "total_workflow_steps": {
+            "type": "integer",
+            "description": "Total number of steps in the workflow"
+          }
+        }
+      },
+      "GetWorkflowTemplateUuidRequest": {
+        "required": [
+          "workflow_name"
+        ],
+        "type": "object",
+        "properties": {
+          "workflow_name": {
+            "type": "string",
+            "description": "Name of the workflow template"
+          }
+        }
+      },
+      "GetWorkflowTemplateUuidResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow template"
+          }
+        }
+      },
+      "AddWorkflowStepRequest": {
+        "required": [
+          "index",
+          "workflow_uuid",
+          "webhook_name",
+          "webhook_description",
+          "method",
+          "path",
+          "domain_uuid",
+          "human_approval_required",
+          "step_identifier",
+          "on_success_next_step_identifier",
+          "on_fail_next_step_identifier",
+          "delay_to_next_step",
+          "retry_delay",
+          "retry_backoff_mode",
+          "max_retries",
+          "request_timeout_in_milliseconds",
+          "request_body_json",
+          "headers_json",
+          "query_params_json"
+        ],
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Priority index for FIFO execution order (0 is first)"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "UUID of the workflow template to add the step to"
+          },
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook step"
+          },
+          "webhook_description": {
+            "type": "string",
+            "description": "Description of the webhook step"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+            "description": "HTTP method for the webhook call"
+          },
+          "path": {
+            "type": "string",
+            "description": "URL path for the webhook (supports template variables)"
+          },
+          "domain_uuid": {
+            "type": "string",
+            "description": "UUID of the domain associated with this webhook step"
+          },
+          "human_approval_required": {
+            "type": "boolean",
+            "description": "Whether this step requires human approval before execution"
+          },
+          "step_identifier": {
+            "type": "string",
+            "description": "Unique identifier (slug) for this step"
+          },
+          "on_success_next_step_identifier": {
+            "type": "string",
+            "description": "Step identifier to execute next on success"
+          },
+          "on_fail_next_step_identifier": {
+            "type": "string",
+            "description": "Step identifier to execute next on failure"
+          },
+          "delay_to_next_step": {
+            "type": "integer",
+            "description": "Delay in seconds before executing the next step"
+          },
+          "execution_condition": {
+            "type": "object",
+            "description": "Condition that must be met for this step to execute",
+            "properties": {
+              "operator": {
+                "type": "string",
+                "enum": ["eq", "ne", "lt", "gt", "lte", "gte", "in", "contains"],
+                "description": "Comparison operator"
+              },
+              "field": {
+                "type": "string",
+                "description": "Field path to evaluate"
+              },
+              "value": {
+                "type": "string",
+                "description": "Value to compare against"
+              }
+            }
+          },
+          "retry_delay": {
+            "type": "integer",
+            "description": "Delay in seconds between retry attempts (default: 10)"
+          },
+          "retry_backoff_mode": {
+            "type": "string",
+            "enum": ["linear", "exponential"],
+            "description": "Retry backoff strategy (default: linear)"
+          },
+          "max_retries": {
+            "type": "integer",
+            "description": "Maximum number of retry attempts (default: 5)"
+          },
+          "request_timeout_in_milliseconds": {
+            "type": "integer",
+            "description": "Request timeout in milliseconds (default: 5000)"
+          },
+          "request_body_json": {
+            "type": "object",
+            "description": "Request body as JSON object (supports template variables: {{ #key }}, {{ step.response.key }}, {{ initial.key }})"
+          },
+          "headers_json": {
+            "type": "object",
+            "description": "HTTP headers as JSON object (supports template variables)"
+          },
+          "query_params_json": {
+            "type": "object",
+            "description": "Query parameters as JSON object (supports template variables)"
+          }
+        }
+      },
+      "AddWorkflowStepResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "GetWorkflowTemplateDetailRequest": {
+        "required": [
+          "workflow_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "workflow_uuid": {
+            "type": "string",
+            "description": "UUID of the workflow template"
+          }
+        }
+      },
+      "GetWorkflowTemplateDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WorkflowTemplateDetail"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "WorkflowTemplateDetail": {
+        "type": "object",
+        "properties": {
+          "workflow_name": {
+            "type": "string",
+            "description": "Name of the workflow template"
+          },
+          "runtype": {
+            "type": "string",
+            "enum": [
+              "fifo_sequential",
+              "concurrently"
+            ],
+            "description": "Execution mode: 'fifo_sequential' for strict sequential order, 'concurrently' for parallel execution"
+          },
+          "workflow_description": {
+            "type": "string",
+            "description": "Description of the workflow template"
+          },
+          "workflow_steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStepDetail"
+            },
+            "description": "Array of workflow steps"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow template"
+          }
+        }
+      },
+      "WorkflowStepDetail": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Priority index for FIFO execution order"
+          },
+          "human_approval_required": {
+            "type": "boolean",
+            "description": "Whether this step requires human approval"
+          },
+          "delay_to_next_step": {
+            "type": "integer",
+            "description": "Delay in seconds before executing the next step"
+          },
+          "step_identifier": {
+            "type": "string",
+            "description": "Unique identifier (slug) for this step"
+          },
+          "execution_conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutionCondition"
+            },
+            "description": "Array of execution conditions for this step"
+          },
+          "step_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow step"
+          },
+          "webhook": {
+            "$ref": "#/components/schemas/WorkflowStepWebhook"
+          }
+        }
+      },
+      "ExecutionCondition": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Value to compare against"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "ne",
+              "lt",
+              "gt",
+              "lte",
+              "gte",
+              "in",
+              "contains"
+            ],
+            "description": "Comparison operator"
+          },
+          "field": {
+            "type": "string",
+            "description": "Field path to evaluate"
+          }
+        }
+      },
+      "WorkflowStepWebhook": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "URL path for the webhook"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/WorkflowStepDomain"
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE",
+              "PATCH"
+            ],
+            "description": "HTTP method"
+          },
+          "webhook_name": {
+            "type": "string",
+            "description": "Name of the webhook"
+          },
+          "expected_system_variables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of system variables expected in this webhook"
+          },
+          "headers_json": {
+            "type": "object",
+            "description": "HTTP headers as JSON object"
+          },
+          "query_params_json": {
+            "type": "object",
+            "description": "Query parameters as JSON object"
+          },
+          "request_body_json": {
+            "type": "object",
+            "description": "Request body as JSON object"
+          },
+          "webhook_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the webhook"
+          }
+        }
+      },
+      "WorkflowStepDomain": {
+        "type": "object",
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "http",
+              "https"
+            ],
+            "description": "Protocol type"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain name"
           }
         }
       }

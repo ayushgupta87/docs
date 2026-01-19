@@ -72,7 +72,12 @@
           {
             "group": "Workflow Template",
             "pages": [
-              "api-reference/workflow-template/overview"
+              "api-reference/workflow-template/overview",
+              "api-reference/workflow-template/add-workflow-template",
+              "api-reference/workflow-template/get-workflow-template-paginated",
+              "api-reference/workflow-template/get-workflow-template-uuid",
+              "api-reference/workflow-template/add-workflow-step",
+              "api-reference/workflow-template/single-workflow-template-detail"
             ]
           },
           {

@@ -170,7 +170,7 @@ echo $response;
 |-------|------|----------|-------------|
 | `webhook_name` | string | Yes | Name of the webhook template |
 | `webhook_description` | string | Yes | Description of the webhook template |
-| `method` | string | Yes | HTTP method (e.g., "GET", "POST", "PUT", "DELETE") |
+| `method` | string | Yes | HTTP method. Allowed values: `"GET"`, `"POST"`, `"PUT"`, `"DELETE"`, `"PATCH"` |
 | `path` | string | Yes | URL path for the webhook (e.g., "/hr/") |
 | `domain_uuid` | string | Yes | UUID of the domain associated with this webhook template |
 | `retry_delay` | integer | Yes | Delay in seconds between retry attempts |
