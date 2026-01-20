@@ -96,7 +96,7 @@
               "api-reference/scheduling/add-clocked-schedule",
               "api-reference/scheduling/add-solar-schedule",
               "api-reference/scheduling/add-schedule-rule",
-              "api-reference/scheduling/get-active-schedules-paginated",
+              "api-reference/scheduling/get-schedules-paginated",
               "api-reference/scheduling/get-single-schedule-details",
               "api-reference/scheduling/change-schedule-status",
               "api-reference/scheduling/delete-schedule"

@@ -1192,7 +1192,7 @@
         }
       }
     },
-    "/v1/api/get_active_schedules_paginatated/": {
+    "/v1/api/get_schedules_paginated/": {
       "get": {
         "description": "Retrieve a paginated list of schedules filtered by status (active, inactive, paused, completed, or expired)",
         "parameters": [
@@ -1231,7 +1231,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetActiveSchedulesPaginatedResponse"
+                  "$ref": "#/components/schemas/GetSchedulesPaginatedResponse"
                 }
               }
             }
@@ -2934,7 +2934,7 @@
           }
         }
       },
-      "GetActiveSchedulesPaginatedResponse": {
+      "GetSchedulesPaginatedResponse": {
         "type": "object",
         "properties": {
           "data": {
