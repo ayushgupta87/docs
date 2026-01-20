@@ -1,0 +1,211 @@
+---
+title: 'Get All Pending Approvals (Paginated)'
+openapi: 'GET /v1/api/get_all_pending_approvals_paginated/'
+---
+
+Retrieve a paginated list of all pending approvals for workflows that are waiting for human approval. Use this endpoint to view all execution plans that require manual approval before proceeding.
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.hookpulse.io
+```
+
+## Example request
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.hookpulse.io/v1/api/get_all_pending_approvals_paginated/?page=1" \
+  -H "x-hookpulse-api-key: {{x-hookpulse-api-key}}" \
+  -H "x-brand-uuid: {{x-brand-uuid}}"
+```
+
+```javascript JavaScript
+const page = {{page}};
+const response = await fetch(`https://api.hookpulse.io/v1/api/get_all_pending_approvals_paginated/?page=${page}`, {
+  method: 'GET',
+  headers: {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+url = 'https://api.hookpulse.io/v1/api/get_all_pending_approvals_paginated/'
+headers = {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+}
+params = {
+    'page': {{page}}
+}
+
+response = requests.get(url, headers=headers, params=params)
+print(response.json())
+```
+
+```ruby Ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+uri = URI('https://api.hookpulse.io/v1/api/get_all_pending_approvals_paginated/')
+uri.query = URI.encode_www_form({ page: {{page}} })
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(uri)
+request['x-hookpulse-api-key'] = '{{x-hookpulse-api-key}}'
+request['x-brand-uuid'] = '{{x-brand-uuid}}'
+
+response = http.request(request)
+puts JSON.parse(response.body)
+```
+
+```php PHP
+<?php
+
+$page = {{page}};
+$url = "https://api.hookpulse.io/v1/api/get_all_pending_approvals_paginated/?page=" . urlencode($page);
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'x-hookpulse-api-key: {{x-hookpulse-api-key}}',
+    'x-brand-uuid: {{x-brand-uuid}}'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
+?>
+```
+
+</RequestExample>
+
+## Query parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | integer | No | Page number to retrieve (starts from 1, default: 1) |
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "data": [
+    {
+      "execution_plan_uuid": "{{execution_plan_uuid}}",
+      "workflow_uuid": "{{workflow_uuid}}",
+      "workflow_name": "{{workflow_name}}",
+      "step_identifier": "{{step_identifier}}",
+      "workflow_index": {{workflow_index}},
+      "status": "waiting_approval",
+      "human_approval_required": true,
+      "delay_to_next_step": {{delay_to_next_step}},
+      "inserted_at": "{{inserted_at}}"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "total_count": {{total_count}},
+    "per_page": 20,
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
+  },
+  "success": true
+}
+```
+
+</ResponseExample>
+
+## Response fields
+
+### Data array
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_plan_uuid` | string | Unique identifier (UUID) for the execution plan |
+| `workflow_uuid` | string | UUID of the workflow template being executed |
+| `workflow_name` | string | Name of the workflow template |
+| `step_identifier` | string | Identifier of the current workflow step waiting for approval |
+| `workflow_index` | integer | Index/position of the workflow step |
+| `status` | string | Execution status (always `"waiting_approval"` for pending approvals) |
+| `human_approval_required` | boolean | Whether human approval is required for this step |
+| `delay_to_next_step` | integer | Delay in seconds before proceeding to the next step after approval |
+| `inserted_at` | string | ISO 8601 timestamp when the execution plan was created |
+
+### Meta object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `page` | integer | Current page number |
+| `total_count` | integer | Total number of pending approvals |
+| `per_page` | integer | Number of items per page |
+| `total_pages` | integer | Total number of pages |
+| `has_next` | boolean | Whether there is a next page |
+| `has_prev` | boolean | Whether there is a previous page |
+
+### Root fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `data` | array | Array of pending approval objects |
+| `meta` | object | Pagination metadata |
+
+## Error Responses
+
+If the page is out of range, you will receive:
+
+```json
+{
+  "success": false,
+  "error": "Page out of range",
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": 20,
+    "total_pages": {{total_pages}},
+    "has_next": false,
+    "has_prev": false
+  }
+}
+```
+
+## Use Cases
+
+- **Review Pending Approvals**: View all workflows waiting for human approval
+- **Approval Dashboard**: Build a dashboard to manage all pending approvals
+- **Workflow Monitoring**: Track which workflows are paused waiting for approval
+- **Audit Trail**: Review approval requests by creation date
+- **Bulk Operations**: Process multiple approvals efficiently
+
+## Sorting
+
+Results are sorted by `inserted_at` in descending order, showing the most recently created pending approvals first.
+
+## Important Notes
+
+- **Execution Plan UUID**: Use the `execution_plan_uuid` field when calling the [Human Approval Action](/docs/api-reference/human-approval/human-approval-action) endpoint
+- **Workflow UUID**: The `workflow_uuid` field identifies the workflow template that contains this execution plan
+- **Sorted by Date**: Results are sorted by `inserted_at` in descending order (newest first)
+
+## Related Documentation
+
+- [Human Approval Overview](/docs/api-reference/human-approval/overview) - Learn about human approval in workflows
+- [Human Approval Action](/docs/api-reference/human-approval/human-approval-action) - Approve or reject pending approvals using `execution_plan_uuid`
+- [Workflow Template Overview](/docs/api-reference/workflow-template/overview) - Learn about workflow templates and steps

@@ -1,0 +1,180 @@
+---
+title: 'Get Timezone Options'
+openapi: 'GET /v1/api/timezone_options/'
+---
+
+Retrieve a complete list of all available IANA timezones supported by HookPulse. This endpoint returns all 500+ timezones that can be used in cron, clocked, and solar schedules.
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.hookpulse.io
+```
+
+## Example request
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.hookpulse.io/v1/api/timezone_options/" \
+  -H "x-hookpulse-api-key: {{x-hookpulse-api-key}}" \
+  -H "x-brand-uuid: {{x-brand-uuid}}"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.hookpulse.io/v1/api/timezone_options/', {
+  method: 'GET',
+  headers: {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+url = 'https://api.hookpulse.io/v1/api/timezone_options/'
+headers = {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```ruby Ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+uri = URI('https://api.hookpulse.io/v1/api/timezone_options/')
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(uri)
+request['x-hookpulse-api-key'] = '{{x-hookpulse-api-key}}'
+request['x-brand-uuid'] = '{{x-brand-uuid}}'
+
+response = http.request(request)
+puts JSON.parse(response.body)
+```
+
+```php PHP
+<?php
+
+$url = "https://api.hookpulse.io/v1/api/timezone_options/";
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'x-hookpulse-api-key: {{x-hookpulse-api-key}}',
+    'x-brand-uuid: {{x-brand-uuid}}'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
+?>
+```
+
+</RequestExample>
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "data": [
+    {
+      "label": "Africa/Abidjan",
+      "value": "Africa/Abidjan"
+    },
+    {
+      "label": "Africa/Accra",
+      "value": "Africa/Accra"
+    },
+    {
+      "label": "America/New_York",
+      "value": "America/New_York"
+    },
+    {
+      "label": "Asia/Kolkata",
+      "value": "Asia/Kolkata"
+    },
+    {
+      "label": "Europe/London",
+      "value": "Europe/London"
+    },
+    {
+      "label": "Pacific/Auckland",
+      "value": "Pacific/Auckland"
+    }
+  ],
+  "success": true
+}
+```
+
+</ResponseExample>
+
+## Response fields
+
+### Data array
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `label` | string | Human-readable timezone label (same as value) |
+| `value` | string | IANA timezone identifier to use in schedule requests |
+
+### Root fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `data` | array | Array of timezone objects (500+ timezones) |
+
+## Usage
+
+Use the `value` field from the response when creating schedules that require timezone specification:
+
+- **Cron Schedules**: Use in `cron_timezone` field
+- **Clocked Schedules**: Use in `clocked_timezone` field
+- **Solar Schedules**: Timezone is calculated based on coordinates
+
+## Timezone Coverage
+
+HookPulse supports the complete IANA Time Zone Database, including:
+
+- **All continents**: Africa, America, Antarctica, Arctic, Asia, Atlantic, Australia, Europe, Indian, Pacific
+- **500+ timezones**: Complete coverage of all recognized timezones
+- **Automatic DST handling**: Daylight Saving Time transitions are handled automatically
+- **Historical accuracy**: Accurate timezone data for past and future dates
+
+## Common Timezones
+
+Popular timezones you might use:
+
+- `America/New_York` - Eastern Time (US)
+- `America/Chicago` - Central Time (US)
+- `America/Denver` - Mountain Time (US)
+- `America/Los_Angeles` - Pacific Time (US)
+- `Europe/London` - Greenwich Mean Time / British Summer Time
+- `Europe/Paris` - Central European Time
+- `Asia/Kolkata` - India Standard Time
+- `Asia/Tokyo` - Japan Standard Time
+- `Australia/Sydney` - Australian Eastern Time
+- `UTC` - Coordinated Universal Time
+
+## Related Documentation
+
+- [Scheduling Overview](/docs/api-reference/scheduling/overview) - Learn about scheduling types and features
+- [Add Cron Schedule](/docs/api-reference/scheduling/add-cron-schedule) - Create a cron-based schedule
+- [Add Clocked Schedule](/docs/api-reference/scheduling/add-clocked-schedule) - Create a one-time scheduled task

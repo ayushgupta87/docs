@@ -870,6 +870,463 @@
           }
         }
       }
+    },
+    "/v1/api/timezone_options/": {
+      "get": {
+        "description": "Retrieve a complete list of all available IANA timezones supported by HookPulse",
+        "responses": {
+          "200": {
+            "description": "Successful response with list of timezones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimezoneOptionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_interval_schedule/": {
+      "post": {
+        "description": "Create a new interval-based schedule that executes a webhook or workflow at regular intervals",
+        "requestBody": {
+          "description": "Interval schedule configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddIntervalScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_cron_schedule/": {
+      "post": {
+        "description": "Create a new cron-based schedule that executes a webhook or workflow using standard cron expressions",
+        "requestBody": {
+          "description": "Cron schedule configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCronScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_clocked_schedule/": {
+      "post": {
+        "description": "Create a one-time scheduled task that executes a webhook or workflow at a specific date and time",
+        "requestBody": {
+          "description": "Clocked schedule configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddClockedScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_schedule_rule/": {
+      "post": {
+        "description": "Add a rule to an existing schedule to control execution conditions, exclusions, and termination criteria",
+        "requestBody": {
+          "description": "Schedule rule configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddScheduleRuleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rule added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/add_solar_schedule/": {
+      "post": {
+        "description": "Create a solar event-based schedule that executes a webhook or workflow based on sunrise, sunset, or other solar events",
+        "requestBody": {
+          "description": "Solar schedule configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSolarScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_single_schedule_details/": {
+      "post": {
+        "description": "Retrieve detailed information about a specific schedule by its UUID, including driver configuration, status, execution history, timezone conversions, and associated rules",
+        "requestBody": {
+          "description": "Schedule UUID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetSingleScheduleDetailsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSingleScheduleDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/delete_schedule/": {
+      "delete": {
+        "description": "Delete a schedule by its UUID. This permanently removes the schedule and all associated rules",
+        "requestBody": {
+          "description": "Schedule UUID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/change_schedule_status/": {
+      "post": {
+        "description": "Update the status of an existing schedule. Use this endpoint to activate or pause a schedule without deleting it",
+        "requestBody": {
+          "description": "Schedule status update configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeScheduleStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleStatusUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_active_schedules_paginatated/": {
+      "get": {
+        "description": "Retrieve a paginated list of schedules filtered by status (active, inactive, paused, completed, or expired)",
+        "parameters": [
+          {
+            "name": "filter_status",
+            "in": "query",
+            "required": true,
+            "description": "Filter schedules by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive",
+                "paused",
+                "completed",
+                "expired"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number to retrieve (starts from 1)",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetActiveSchedulesPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/get_all_pending_approvals_paginated/": {
+      "get": {
+        "description": "Retrieve a paginated list of all pending approvals for workflows that are waiting for human approval",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number to retrieve (starts from 1)",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllPendingApprovalsPaginatedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Page out of range or project brand not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorWithMeta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/human_approval_action/": {
+      "post": {
+        "description": "Approve or reject a pending workflow approval. Approving allows the workflow to continue, while rejecting skips the current step and moves to the failure path",
+        "requestBody": {
+          "description": "Human approval action configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HumanApprovalActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Action processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HumanApprovalActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or execution plan not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2147,6 +2604,796 @@
           "domain": {
             "type": "string",
             "description": "Domain name"
+          }
+        }
+      },
+      "TimezoneOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimezoneOption"
+            },
+            "description": "Array of timezone options"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "TimezoneOption": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Human-readable timezone label"
+          },
+          "value": {
+            "type": "string",
+            "description": "IANA timezone identifier"
+          }
+        }
+      },
+      "AddIntervalScheduleRequest": {
+        "required": [
+          "interval_value",
+          "interval_period",
+          "schedule_to",
+          "model_to_schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "interval_value": {
+            "type": "integer",
+            "description": "Number of time units between executions (must be > 0)",
+            "minimum": 1
+          },
+          "interval_period": {
+            "type": "string",
+            "enum": [
+              "second",
+              "minute",
+              "hour"
+            ],
+            "description": "Unit of time: 'second', 'minute', or 'hour'"
+          },
+          "schedule_to": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Target type: 'webhook' or 'workflow'"
+          },
+          "model_to_schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template to schedule"
+          },
+          "initial_context_template": {
+            "type": "object",
+            "description": "Key-value pairs passed as {{ initial.key }} variables to the webhook/workflow",
+            "additionalProperties": true
+          }
+        }
+      },
+      "AddCronScheduleRequest": {
+        "required": [
+          "cron_expression",
+          "cron_timezone",
+          "schedule_to",
+          "model_to_schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "cron_expression": {
+            "type": "string",
+            "description": "Standard cron expression (e.g., '0 0 * * *' for daily at midnight)"
+          },
+          "cron_timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier"
+          },
+          "schedule_to": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Target type: 'webhook' or 'workflow'"
+          },
+          "model_to_schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template to schedule"
+          },
+          "initial_context_template": {
+            "type": "object",
+            "description": "Key-value pairs passed as {{ initial.key }} variables to the webhook/workflow",
+            "additionalProperties": true
+          }
+        }
+      },
+      "AddClockedScheduleRequest": {
+        "required": [
+          "clocked_run_at",
+          "clocked_timezone",
+          "is_one_off_task",
+          "schedule_to",
+          "model_to_schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "clocked_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 datetime string for when to execute"
+          },
+          "clocked_timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier"
+          },
+          "is_one_off_task": {
+            "type": "boolean",
+            "description": "Whether this is a one-time task"
+          },
+          "schedule_to": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Target type: 'webhook' or 'workflow'"
+          },
+          "model_to_schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template to schedule"
+          },
+          "initial_context_template": {
+            "type": "object",
+            "description": "Key-value pairs passed as {{ initial.key }} variables to the webhook/workflow",
+            "additionalProperties": true
+          }
+        }
+      },
+      "AddScheduleRuleRequest": {
+        "required": [
+          "schedule_uuid",
+          "rule_type"
+        ],
+        "type": "object",
+        "properties": {
+          "schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the schedule to add the rule to"
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": [
+              "time_window",
+              "calendar_window",
+              "solar_window",
+              "exclusion",
+              "termination"
+            ],
+            "description": "Type of rule"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time for time window rules (format: HH:mm:ss)"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "time",
+            "description": "End time for time window rules (format: HH:mm:ss)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone for time window rules (IANA timezone identifier)"
+          },
+          "allow_days": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 31
+            },
+            "description": "Array of day numbers (1-31) for calendar window rules"
+          },
+          "allow_months": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "description": "Array of month numbers (1-12) for calendar window rules"
+          },
+          "exclusion_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Array of dates to exclude (format: YYYY-MM-DD) for exclusion rules"
+          },
+          "solar_start_event": {
+            "type": "string",
+            "enum": [
+              "sunrise",
+              "sunset",
+              "civil_dawn",
+              "civil_dusk",
+              "nautical_dawn",
+              "nautical_dusk",
+              "astronomical_dawn",
+              "astronomical_dusk"
+            ],
+            "description": "Solar event for start of solar window"
+          },
+          "solar_end_event": {
+            "type": "string",
+            "enum": [
+              "sunrise",
+              "sunset",
+              "civil_dawn",
+              "civil_dusk",
+              "nautical_dawn",
+              "nautical_dusk",
+              "astronomical_dawn",
+              "astronomical_dusk"
+            ],
+            "description": "Solar event for end of solar window"
+          },
+          "solar_lat": {
+            "type": "string",
+            "description": "Latitude for solar window rules (decimal degrees)"
+          },
+          "solar_long": {
+            "type": "string",
+            "description": "Longitude for solar window rules (decimal degrees)"
+          },
+          "max_run_to_termainate_after": {
+            "type": "integer",
+            "description": "Maximum number of runs before termination (for termination rules)"
+          },
+          "expire_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 datetime when schedule should expire (for termination rules)"
+          }
+        }
+      },
+      "AddSolarScheduleRequest": {
+        "required": [
+          "solar_event",
+          "solar_lat",
+          "solar_long",
+          "schedule_to",
+          "model_to_schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "solar_event": {
+            "type": "string",
+            "enum": [
+              "sunrise",
+              "sunset",
+              "civil_dawn",
+              "civil_dusk",
+              "nautical_dawn",
+              "nautical_dusk",
+              "astronomical_dawn",
+              "astronomical_dusk"
+            ],
+            "description": "Solar event type"
+          },
+          "solar_lat": {
+            "type": "string",
+            "description": "Latitude in decimal degrees"
+          },
+          "solar_long": {
+            "type": "string",
+            "description": "Longitude in decimal degrees"
+          },
+          "solar_offset_seconds": {
+            "type": "integer",
+            "description": "Offset in seconds to adjust timing (e.g., 5 for 5 seconds after, -300 for 5 minutes before)"
+          },
+          "schedule_to": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Target type: 'webhook' or 'workflow'"
+          },
+          "model_to_schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template to schedule"
+          },
+          "initial_context_template": {
+            "type": "object",
+            "description": "Key-value pairs passed as {{ initial.key }} variables to the webhook/workflow",
+            "additionalProperties": true
+          }
+        }
+      },
+      "ScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the schedule was created successfully"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "GetActiveSchedulesPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleListItem"
+            },
+            "description": "Array of schedule objects"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "ScheduleListItem": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "description": "Reason for the schedule status"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "paused",
+              "completed",
+              "expired"
+            ],
+            "description": "Current status of the schedule"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Type of schedule target"
+          },
+          "model_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template being scheduled"
+          },
+          "driver_type": {
+            "type": "string",
+            "enum": [
+              "interval",
+              "cron",
+              "clocked",
+              "solar",
+              "debounce"
+            ],
+            "description": "Schedule driver type"
+          },
+          "last_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 timestamp of the last execution (UTC)"
+          },
+          "next_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 timestamp of the next scheduled execution (UTC)"
+          },
+          "total_schedule_triggered": {
+            "type": "integer",
+            "description": "Total number of times the schedule has been triggered"
+          },
+          "locale_timezone_converted_details": {
+            "$ref": "#/components/schemas/LocaleTimezoneConvertedDetails"
+          },
+          "schedule_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the schedule"
+          }
+        }
+      },
+      "LocaleTimezoneConvertedDetails": {
+        "type": "object",
+        "properties": {
+          "preferred_timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier used for conversion"
+          },
+          "time_left_to_trigger": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable time until next execution"
+          },
+          "last_run_at_by_preferred_timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last run time converted to preferred timezone (ISO 8601 with offset)"
+          },
+          "next_run_at_by_preferred_timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Next run time converted to preferred timezone (ISO 8601 with offset)"
+          }
+        }
+      },
+      "GetSingleScheduleDetailsRequest": {
+        "required": [
+          "schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the schedule to retrieve details for"
+          }
+        }
+      },
+      "GetSingleScheduleDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ScheduleDetails"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "ScheduleDetails": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "$ref": "#/components/schemas/ScheduleDriver"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "paused",
+              "completed",
+              "expired"
+            ],
+            "description": "Current status of the schedule"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "webhook",
+              "workflow"
+            ],
+            "description": "Type of schedule target"
+          },
+          "last_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 timestamp of the last execution (UTC)"
+          },
+          "next_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 timestamp of the next scheduled execution (UTC)"
+          },
+          "locale_timezone_converted_details": {
+            "$ref": "#/components/schemas/LocaleTimezoneConvertedDetails"
+          },
+          "schedule_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the schedule"
+          },
+          "schedule_applied_model_uuid": {
+            "type": "string",
+            "description": "UUID of the webhook or workflow template being scheduled"
+          },
+          "target_name": {
+            "type": "string",
+            "description": "Name of the webhook or workflow template"
+          },
+          "target_description": {
+            "type": "string",
+            "description": "Description of the webhook or workflow template"
+          },
+          "total_triggered": {
+            "type": "integer",
+            "description": "Total number of times the schedule has been triggered"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Rule object (structure varies by rule type)"
+            },
+            "description": "Array of rules associated with this schedule"
+          }
+        }
+      },
+      "ScheduleDriver": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "interval",
+              "cron",
+              "clocked",
+              "solar",
+              "debounce"
+            ],
+            "description": "Driver type"
+          },
+          "interval_value": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of time units between executions (for interval schedules)"
+          },
+          "interval_period": {
+            "type": "string",
+            "enum": [
+              "second",
+              "minute",
+              "hour"
+            ],
+            "nullable": true,
+            "description": "Unit of time for interval schedules"
+          },
+          "cron_expression": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cron expression (for cron schedules)"
+          },
+          "cron_timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "IANA timezone identifier (for cron schedules)"
+          },
+          "clocked_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO 8601 datetime for execution (for clocked schedules)"
+          },
+          "clocked_timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "IANA timezone identifier (for clocked schedules)"
+          },
+          "solar_event": {
+            "type": "string",
+            "enum": [
+              "sunrise",
+              "sunset",
+              "civil_dawn",
+              "civil_dusk",
+              "nautical_dawn",
+              "nautical_dusk",
+              "astronomical_dawn",
+              "astronomical_dusk"
+            ],
+            "nullable": true,
+            "description": "Solar event type (for solar schedules)"
+          },
+          "solar_lat": {
+            "type": "string",
+            "nullable": true,
+            "description": "Latitude in decimal degrees (for solar schedules)"
+          },
+          "solar_long": {
+            "type": "string",
+            "nullable": true,
+            "description": "Longitude in decimal degrees (for solar schedules)"
+          },
+          "is_one_off": {
+            "type": "boolean",
+            "description": "Whether this is a one-time task"
+          },
+          "solar_offset": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Offset in seconds (for solar schedules)"
+          }
+        }
+      },
+      "DeleteScheduleRequest": {
+        "required": [
+          "schedule_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the schedule to delete"
+          }
+        }
+      },
+      "DeleteScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the schedule was deleted successfully"
+          },
+          "error": {
+            "type": "string",
+            "description": "Success message indicating the schedule was deleted"
+          }
+        }
+      },
+      "ChangeScheduleStatusRequest": {
+        "required": [
+          "schedule_uuid",
+          "update_status_to"
+        ],
+        "type": "object",
+        "properties": {
+          "schedule_uuid": {
+            "type": "string",
+            "description": "UUID of the schedule to update"
+          },
+          "update_status_to": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused"
+            ],
+            "description": "New status: 'active' or 'paused'"
+          }
+        }
+      },
+      "ScheduleStatusUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the status was updated successfully"
+          },
+          "details": {
+            "type": "string",
+            "description": "Success message"
+          }
+        }
+      },
+      "GetAllPendingApprovalsPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PendingApprovalItem"
+            },
+            "description": "Array of pending approval objects"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          }
+        }
+      },
+      "PendingApprovalItem": {
+        "type": "object",
+        "properties": {
+          "execution_plan_uuid": {
+            "type": "string",
+            "description": "Unique identifier (UUID) for the execution plan"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "UUID of the workflow template being executed"
+          },
+          "workflow_name": {
+            "type": "string",
+            "description": "Name of the workflow template"
+          },
+          "step_identifier": {
+            "type": "string",
+            "description": "Identifier of the current workflow step waiting for approval"
+          },
+          "workflow_index": {
+            "type": "integer",
+            "description": "Index/position of the workflow step"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "waiting_approval"
+            ],
+            "description": "Execution status (always 'waiting_approval' for pending approvals)"
+          },
+          "human_approval_required": {
+            "type": "boolean",
+            "description": "Whether human approval is required for this step"
+          },
+          "delay_to_next_step": {
+            "type": "integer",
+            "description": "Delay in seconds before proceeding to the next step after approval"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the execution plan was created"
+          }
+        }
+      },
+      "ErrorWithMeta": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "HumanApprovalActionRequest": {
+        "required": [
+          "action",
+          "execution_plan_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject"
+            ],
+            "description": "Action to take: 'approve' or 'reject'"
+          },
+          "execution_plan_uuid": {
+            "type": "string",
+            "description": "UUID of the execution plan waiting for approval"
+          }
+        }
+      },
+      "HumanApprovalActionResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the action was processed successfully"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message indicating the action taken"
           }
         }
       }

@@ -28,42 +28,86 @@ Building reliable task scheduling infrastructure is hard. Most developers end up
 Schedule webhooks and API calls with **millisecond precision** using multiple scheduling strategies:
 
 - **Interval Scheduling**: Run tasks every X seconds, minutes, hours, days, weeks, or months
-- **Cron Scheduling**: Industry-standard cron expressions with IANA timezone support
-- **Solar Scheduling**: Trigger tasks at sunrise/sunset with geographic coordinates
+- **Cron Scheduling**: Industry-standard cron expressions with IANA timezone support (500+ timezones)
+- **Solar Scheduling**: Trigger tasks at sunrise, sunset, or other solar events using geographic coordinates
 - **Clocked Scheduling**: One-time scheduled executions at specific dates/times
+- **Debounce Scheduling**: Prevent rapid-fire executions with configurable debounce logic
+- **Schedule Rules**: Advanced rule engine with time windows, calendar windows, exclusions, and termination conditions
 
-### 🔄 **Workflow Orchestration**
+**See [Scheduling Overview](/docs/api-reference/scheduling/overview)** for complete documentation.
 
-Build complex, multi-step workflows with conditional execution:
+### 🔄 **Advanced Workflow Orchestration**
+
+Build complex, multi-step workflows with enterprise features:
 
 - **Visual Workflow Builder**: Drag-and-drop interface for creating workflows
-- **Payload Transformation**: Transform data between workflow steps
-- **Conditional Logic**: Route execution based on conditions
-- **Template Library**: Reusable workflow templates for common patterns
-- **Workflow Visualization**: Interactive graphs showing data flow and step connections
+- **FIFO Sequential Mode**: Strict First-In-First-Out ordering for critical workflows with full variable support
+- **Concurrent Mode**: Parallel execution for independent operations
+- **Conditional Execution**: Route execution based on field values and operators (eq, ne, lt, gt, lte, gte, in, contains)
+- **Failure Handling**: Stop on failure or continue execution with configurable retry strategies
+- **Retry Strategies**: Retry from initial step or resume from failed step
+- **Human Approval**: Pause workflows for manual approval steps with native support
+- **Template Variables**: Dynamic variable substitution with system secrets (`{{ #key }}`), step responses (`{{ step.response.variable }}`), and initial context (`{{ initial.variable }}`)
+
+**See [Workflow Template Overview](/docs/api-reference/workflow-template/overview)** for complete documentation.
 
 ### 🛡️ **Enterprise-Grade Features**
 
-**Traffic Guard Layer** - Protect your infrastructure:
+**Traffic Guard Layer** - Protect your infrastructure with built-in controls:
 
-- **Rate Limiting**: Set max requests per second per project
-- **Concurrency Control**: Limit concurrent executions to prevent overload
-- **FIFO Queues**: Strict First-In-First-Out ordering for critical workflows
-- **Idempotency Keys**: Prevent duplicate executions from network retries
+- **Rate Limiting**: Set max requests per second per domain (configurable on/off)
+- **Concurrency Control**: Limit simultaneous executions to prevent overload (configurable on/off)
+- **Domain Management**: Separate API to handle concurrency and rate limiting per domain
 - **Backpressure Logic**: Automatically pause queues when limits are hit
+- **Idempotency Keys**: Prevent duplicate executions from network retries
+
+**See [Domain Setup Overview](/docs/api-reference/domain-setup/overview)** for complete documentation.
+
+### 🔐 **System Secret Vault**
+
+Enterprise-grade secret management for secure operations:
+
+- **Encrypted Storage**: All secrets encrypted at rest using AES-256
+- **Runtime Injection**: Secrets computed at execution time, never exposed in logs
+- **Template Integration**: Use secrets in webhook/workflow templates with `{{ #key }}` syntax
+- **Audit Trail**: Complete logging of secret access and usage
+- **CRUD Operations**: Full API for adding, updating, retrieving, and deleting secrets
+
+**See [System Secret Vault Overview](/docs/api-reference/system-secret-vault/overview)** for complete documentation.
+
+### 📋 **Webhook Templates**
+
+Reusable webhook configurations for efficient development:
+
+- **Template System**: Create once, use many times with different variables
+- **Variable Support**: Use `{{ variable }}` for dynamic values and `{{ #key }}` for system secrets
+- **Reusability**: Use with webhook UUID in schedules and workflows
+- **Visual Dashboard**: Create templates with visual tools in the dashboard or via API
+- **Full CRUD**: Create, retrieve, update, and delete webhook templates via API
+
+**See [Webhook Template Overview](/docs/api-reference/webhook-template/overview)** for complete documentation.
+
+### 👥 **Human Approval Workflows**
+
+Built-in human approval for critical workflow steps:
+
+- **Native Support**: Pause workflows at any step for manual approval
+- **Approval Dashboard**: View all pending approvals in one place
+- **Approve/Reject Actions**: Simple API to approve or reject pending workflows
+- **Automatic Resumption**: Workflows automatically continue after approval
+- **Failure Path Routing**: Rejected workflows can route to failure paths
+
+**See [Human Approval Overview](/docs/api-reference/human-approval/overview)** for complete documentation.
 
 ### 🌍 **Multi-Timezone Support**
 
 - Full **IANA timezone** support (500+ timezones)
+- **Timezone API**: Get complete list of all available timezones
 - Automatic timezone conversion for all scheduled times
 - Timezone-aware scheduling for global applications
+- Automatic DST (Daylight Saving Time) handling
 
-### 📊 **Real-Time Monitoring & Analytics**
-
-- **Live Concurrency Meter**: Real-time view of concurrent executions
-- **Execution Logs**: Detailed logs with pagination for all executions
-- **Success Rate Tracking**: Monitor execution success rates over time
-- **Performance Metrics**: Latency tracking, retry counts, and response status codes
+**See [Get Timezone Options](/docs/api-reference/scheduling/timezone-options)** for complete timezone list.
 
 ---
 
@@ -149,17 +193,79 @@ Our support team is here to help you succeed with HookPulse.
 
 ## Overview
 
-Welcome to the HookPulse API reference. This documentation provides detailed information about all available endpoints, request/response formats, and authentication methods.
+Welcome to the HookPulse API reference. This comprehensive documentation provides detailed information about all available endpoints, request/response formats, authentication methods, and best practices.
 
-The HookPulse API is RESTful and uses JSON for request and response payloads. All API requests must be authenticated using custom headers (`x-hookpulse-api-key` and `x-brand-uuid`).
+The HookPulse API is **RESTful** and uses **JSON** for all request and response payloads. All API requests must be authenticated using custom headers (`x-hookpulse-api-key` and `x-brand-uuid`). Built on **Elixir/OTP** for enterprise-grade reliability, the HookPulse API delivers 99.9% uptime SLA and handles millions of scheduled tasks effortlessly.
 
 <Card
   title="OpenAPI Specification"
   icon="file-code"
   href="/api-reference/openapi.json"
 >
-  Download the complete OpenAPI specification file
+  Download the complete OpenAPI 3.0.3 specification file with all endpoints and schemas
 </Card>
+
+<Card
+  title="Interactive API Playground"
+  icon="play"
+  href="/api-reference/domain-setup/add-domain"
+>
+  Try API calls directly in your browser with our interactive playground
+</Card>
+
+## API Sections
+
+HookPulse provides comprehensive APIs organized into logical sections:
+
+### 🔐 **System Secret Vault**
+Enterprise-grade secret management with encrypted storage and runtime injection. Store API keys, tokens, and sensitive data securely.
+
+- [System Secret Vault Overview](/docs/api-reference/system-secret-vault/overview)
+- Add, retrieve, update, and delete secrets via API
+- Use secrets in templates with `{{ #key }}` syntax
+
+### 🌐 **Domain Setup**
+Manage domains with rate limiting and concurrency control to protect your infrastructure.
+
+- [Domain Setup Overview](/docs/api-reference/domain-setup/overview)
+- Add domains with configurable rate limits and concurrency controls
+- Retrieve domain information and UUIDs
+
+### 📋 **Webhook Templates**
+Create reusable webhook configurations with variable support and system secret integration.
+
+- [Webhook Template Overview](/docs/api-reference/webhook-template/overview)
+- Create, retrieve, update, and delete webhook templates
+- Use templates in schedules and workflows
+
+### 🔄 **Workflow Templates**
+Build complex multi-step workflows with conditional execution, human approval, and advanced orchestration.
+
+- [Workflow Template Overview](/docs/api-reference/workflow-template/overview)
+- Create workflows with FIFO sequential or concurrent execution
+- Add workflow steps with execution conditions
+- Human approval support at any workflow step
+
+### ⏰ **Scheduling**
+Comprehensive scheduling API supporting interval, cron, clocked, solar, and debounce scheduling with advanced rule engine.
+
+- [Scheduling Overview](/docs/api-reference/scheduling/overview)
+- Get all available timezones (500+ IANA timezones)
+- Create schedules with interval, cron, clocked, or solar timing
+- Add schedule rules for time windows, exclusions, and termination
+- Manage schedule status and retrieve schedule details
+
+### 👥 **Human Approval**
+Native human approval workflows with API support for managing pending approvals.
+
+- [Human Approval Overview](/docs/api-reference/human-approval/overview)
+- Get all pending approvals (paginated)
+- Approve or reject pending workflow steps
+
+### 📊 **Error Handling**
+Consistent error handling across all endpoints with unified error response format.
+
+- [Error Handling Guide](/docs/api-reference/error-handling)
 
 ## Base URL
 
@@ -273,14 +379,14 @@ The API uses standard HTTP status codes:
 
 ## Pagination
 
-List endpoints support pagination using `limit` and `offset` query parameters:
+Most list endpoints support pagination using `page` query parameter (1-based):
 
 ```bash
-GET https://api.hookpulse.io/v1/api/resources?limit=20&offset=0
+GET https://api.hookpulse.io/v1/api/get_domain_paginated/?page=1
 ```
 
 <Note>
-The base URL is `https://api.hookpulse.io`. All endpoints are prefixed with `/v1/api/`.
+The base URL is `https://api.hookpulse.io`. All endpoints are prefixed with `/v1/api/` and include trailing slashes.
 </Note>
 
 Response includes pagination metadata:
@@ -288,15 +394,81 @@ Response includes pagination metadata:
 ```json
 {
   "data": [...],
-  "pagination": {
-    "limit": 20,
-    "offset": 0,
-    "total": 100,
-    "has_more": true
+  "meta": {
+    "page": 1,
+    "total_count": 100,
+    "per_page": 20,
+    "total_pages": 5,
+    "has_next": true,
+    "has_prev": false
+  },
+  "success": true
+}
+```
+
+## Code Examples
+
+All API endpoints include code examples in multiple languages:
+
+- **cURL**: Command-line examples for quick testing
+- **JavaScript/TypeScript**: Modern JavaScript with fetch API
+- **Python**: Using the `requests` library
+- **Ruby**: Using `Net::HTTP` and `JSON`
+- **PHP**: Using `curl` functions
+
+<Card
+  title="Multi-Language Support"
+  icon="code"
+>
+  HookPulse works with any programming language that supports HTTP. All examples are provided in 5+ languages for easy integration.
+</Card>
+
+## Template Variables
+
+HookPulse supports powerful template variables across webhook templates and workflow steps:
+
+### System Secrets
+Use `{{ #key }}` to inject secrets from the System Secret Vault at runtime:
+```json
+{
+  "headers": {
+    "Authorization": "Bearer {{ #api_key }}"
   }
 }
 ```
 
-## Webhooks
+### Workflow Step Responses
+Use `{{ step.response.variable }}` to access responses from previous workflow steps:
+```json
+{
+  "body": {
+    "user_id": "{{ step.response.user_id }}"
+  }
+}
+```
 
-Hookpulse supports webhooks for real-time event notifications. See the [webhook documentation](/api-reference/endpoint/webhook) for setup instructions.
+### Initial Context
+Use `{{ initial.variable }}` to access variables passed when scheduling:
+```json
+{
+  "body": {
+    "report_type": "{{ initial.report_type }}"
+  }
+}
+```
+
+**See individual overview pages** for detailed documentation on template variables.
+
+## Best Practices
+
+<Card
+  title="API Best Practices"
+  icon="lightbulb"
+>
+  - Always handle errors gracefully using the unified error format
+  - Implement retry logic for transient failures
+  - Use pagination for list endpoints
+  - Store secrets in System Secret Vault instead of hardcoding
+  - Use webhook/workflow templates for reusability
+  - Set appropriate rate limits and concurrency controls per domain
+</Card>

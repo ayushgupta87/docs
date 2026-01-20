@@ -83,13 +83,25 @@
           {
             "group": "Scheduling",
             "pages": [
-              "api-reference/scheduling/overview"
+              "api-reference/scheduling/overview",
+              "api-reference/scheduling/timezone-options",
+              "api-reference/scheduling/add-interval-schedule",
+              "api-reference/scheduling/add-cron-schedule",
+              "api-reference/scheduling/add-clocked-schedule",
+              "api-reference/scheduling/add-solar-schedule",
+              "api-reference/scheduling/add-schedule-rule",
+              "api-reference/scheduling/get-active-schedules-paginated",
+              "api-reference/scheduling/get-single-schedule-details",
+              "api-reference/scheduling/change-schedule-status",
+              "api-reference/scheduling/delete-schedule"
             ]
           },
           {
             "group": "Human Approval",
             "pages": [
-              "api-reference/human-approval/overview"
+              "api-reference/human-approval/overview",
+              "api-reference/human-approval/get-all-pending-approvals-paginated",
+              "api-reference/human-approval/human-approval-action"
             ]
           }
         ]

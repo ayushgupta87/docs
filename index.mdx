@@ -141,44 +141,59 @@ Built to handle everything from startups to enterprise scale:
 
 ### Precise Scheduling
 
-Schedule webhooks and API calls with **millisecond precision**:
+Schedule webhooks and API calls with **millisecond precision** using comprehensive scheduling API:
 
-- **Interval Scheduling**: Every N seconds, minutes, hours, days, weeks, or months
-- **Cron Scheduling**: Industry-standard cron expressions with full IANA timezone support
-- **Solar Scheduling**: Trigger at sunrise, sunset, or other solar events using geographic coordinates
-- **Clocked Scheduling**: One-time scheduled executions at specific dates/times
-- **Debounce Scheduling**: Prevent rapid-fire executions with configurable debounce logic
+- **Interval Scheduling**: Every N seconds, minutes, or hours with configurable intervals
+- **Cron Scheduling**: Industry-standard cron expressions with full IANA timezone support (500+ timezones)
+- **Solar Scheduling**: Trigger at sunrise, sunset, or other solar events using geographic coordinates with offset support
+- **Clocked Scheduling**: One-time scheduled executions at specific dates/times with timezone support
+- **Debounce Scheduling**: Prevent rapid-fire executions with configurable debounce logic (1-86,400 seconds)
+- **Schedule Rules**: Advanced rule engine with time windows, calendar windows, solar windows, exclusions, and termination conditions
+- **Schedule Management**: Full CRUD API to create, retrieve, update status, and delete schedules
+- **Timezone API**: Complete list of 500+ IANA timezones via API for easy integration
 
 ### Advanced Workflow Orchestration
 
 Build complex, multi-step workflows with enterprise features:
 
 - **Visual Workflow Builder**: Drag-and-drop interface for non-developers
-- **FIFO Mode**: Strict First-In-First-Out ordering for critical workflows
+- **FIFO Mode**: Strict First-In-First-Out ordering for critical workflows with full variable support
 - **Concurrent Mode**: Parallel execution for independent operations
-- **Conditional Execution**: Route execution based on field values and conditions
-- **Failure Handling**: Stop on failure or continue execution
-- **Retry Strategies**: Retry from initial or resume from failed step
-- **Human Approval**: Pause workflows for manual approval steps
-- **Template Variables**: Dynamic variable substitution with system secrets
+- **Execution Step Conditions**: Route execution based on field values and operators (eq, ne, lt, gt, lte, gte, in, contains)
+- **Failure Handling**: Stop on failure or continue execution with configurable retry strategies
+- **Retry Strategies**: Retry from initial step or resume from failed step with exponential backoff
+- **Human Approval**: Native support to pause workflows for manual approval steps at any point
+- **Template Variables**: Dynamic variable substitution with system secrets (`{{ #key }}`), step responses (`{{ step.response.variable }}`), and initial context (`{{ initial.variable }}`)
+
+### Webhook & Workflow Templates
+
+Reusable templates for efficient development:
+
+- **Webhook Templates**: Create once, use many times with variable substitution
+- **Template Variables**: Use `{{ variable }}` for dynamic values, `{{ #key }}` for system secrets
+- **Workflow Templates**: Build complex multi-step workflows with reusable components
+- **Visual Dashboard**: Create templates with visual tools or via comprehensive REST API
+- **Full CRUD API**: Complete API for creating, retrieving, updating, and deleting templates
 
 ### Traffic Guard Layer
 
 Protect your infrastructure with built-in controls:
 
-- **Rate Limiting**: Set max requests per second per domain
-- **Concurrency Control**: Limit simultaneous executions to prevent overload
+- **Rate Limiting**: Set max requests per second per domain (configurable on/off)
+- **Concurrency Control**: Limit simultaneous executions to prevent overload (configurable on/off)
+- **Domain Management**: Separate API to manage domains with individual rate limits and concurrency controls
 - **Backpressure Logic**: Automatically pause queues when limits are hit
 - **Idempotency Keys**: Prevent duplicate executions from network retries
 
 ### System Secret Vault
 
-Enterprise-grade secret management:
+Enterprise-grade secret management with full CRUD API:
 
-- **Encrypted Storage**: All secrets encrypted at rest
-- **Runtime Injection**: Secrets computed at execution time, never exposed
-- **Template Integration**: Use secrets in webhook templates with `{{ #key }}` syntax
-- **Audit Trail**: Complete logging of secret access and usage
+- **Encrypted Storage**: All secrets encrypted at rest using AES-256
+- **Runtime Injection**: Secrets computed at execution time, never exposed in logs or responses
+- **Template Integration**: Use secrets in webhook/workflow templates with `{{ #key }}` syntax
+- **Full API Support**: Add, retrieve, update, and delete secrets via RESTful API
+- **Audit Trail**: Complete logging of secret access and usage for compliance
 
 ## Why CTOs, VP Engineering, and Engineering Leaders Choose HookPulse
 
@@ -277,10 +292,13 @@ Since everything is HTTP-based, HookPulse works wherever HTTP works:
 
 ### Comprehensive Documentation
 
-- **Complete API Reference**: Every endpoint documented with examples
-- **Multi-Language Examples**: Code samples in 5+ languages
-- **Interactive Playground**: Try API calls directly in the browser
-- **Best Practices**: Guides for error handling, retry logic, and optimization
+- **Complete API Reference**: Every endpoint documented with detailed examples and request/response schemas
+- **35+ API Endpoints**: Full CRUD operations for domains, webhooks, workflows, schedules, secrets, and approvals
+- **Multi-Language Examples**: Code samples in 5+ languages (cURL, JavaScript, Python, Ruby, PHP) for every endpoint
+- **Interactive Playground**: Try API calls directly in the browser with our "Try it" button
+- **OpenAPI 3.0.3 Specification**: Complete OpenAPI spec for programmatic access and code generation
+- **Best Practices Guides**: Comprehensive guides for error handling, retry logic, and optimization
+- **Template Variables Guide**: Detailed documentation on system secrets, step responses, and initial context
 
 ## Pricing & Transparency
 

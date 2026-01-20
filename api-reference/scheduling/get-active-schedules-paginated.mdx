@@ -1,0 +1,249 @@
+---
+title: 'Get Active Schedules (Paginated)'
+openapi: 'GET /v1/api/get_active_schedules_paginatated/'
+---
+
+Retrieve a paginated list of schedules filtered by status. Use this endpoint to get all active, inactive, paused, completed, or expired schedules.
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.hookpulse.io
+```
+
+## Example request
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.hookpulse.io/v1/api/get_active_schedules_paginatated/?filter_status=active&page=1" \
+  -H "x-hookpulse-api-key: {{x-hookpulse-api-key}}" \
+  -H "x-brand-uuid: {{x-brand-uuid}}"
+```
+
+```javascript JavaScript
+const filterStatus = 'active';
+const page = 1;
+const response = await fetch(`https://api.hookpulse.io/v1/api/get_active_schedules_paginatated/?filter_status=${filterStatus}&page=${page}`, {
+  method: 'GET',
+  headers: {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+url = 'https://api.hookpulse.io/v1/api/get_active_schedules_paginatated/'
+headers = {
+    'x-hookpulse-api-key': '{{x-hookpulse-api-key}}',
+    'x-brand-uuid': '{{x-brand-uuid}}'
+}
+params = {
+    'filter_status': 'active',
+    'page': 1
+}
+
+response = requests.get(url, headers=headers, params=params)
+print(response.json())
+```
+
+```ruby Ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+uri = URI('https://api.hookpulse.io/v1/api/get_active_schedules_paginatated/')
+uri.query = URI.encode_www_form({ filter_status: 'active', page: 1 })
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(uri)
+request['x-hookpulse-api-key'] = '{{x-hookpulse-api-key}}'
+request['x-brand-uuid'] = '{{x-brand-uuid}}'
+
+response = http.request(request)
+puts JSON.parse(response.body)
+```
+
+```php PHP
+<?php
+
+$filterStatus = 'active';
+$page = 1;
+$url = "https://api.hookpulse.io/v1/api/get_active_schedules_paginatated/?filter_status=" . urlencode($filterStatus) . "&page=" . urlencode($page);
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'x-hookpulse-api-key: {{x-hookpulse-api-key}}',
+    'x-brand-uuid: {{x-brand-uuid}}'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
+?>
+```
+
+</RequestExample>
+
+## Query parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `filter_status` | string | Yes | Filter schedules by status: `"active"`, `"inactive"`, `"paused"`, `"completed"`, or `"expired"` |
+| `page` | integer | No | Page number to retrieve (starts from 1, default: 1) |
+
+## Example response
+
+<ResponseExample>
+
+```json
+{
+  "data": [
+    {
+      "reason": "Webhook execution time exhausted",
+      "status": "paused",
+      "type": "webhook",
+      "model_uuid": "{{model_uuid}}",
+      "driver_type": "interval",
+      "last_run_at": "{{last_run_at}}",
+      "next_run_at": null,
+      "total_schedule_triggered": 146,
+      "locale_timezone_converted_details": {
+        "preferred_timezone": "Asia/Kolkata",
+        "time_left_to_trigger": null,
+        "last_run_at_by_preferred_timezone": "{{last_run_at_by_preferred_timezone}}",
+        "next_run_at_by_preferred_timezone": null
+      },
+      "schedule_uuid": "{{schedule_uuid}}"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "total_count": 1,
+    "per_page": 20,
+    "total_pages": 1,
+    "has_next": false,
+    "has_prev": false
+  },
+  "success": true
+}
+```
+
+</ResponseExample>
+
+## Response fields
+
+### Data array
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `reason` | string \| null | Reason for the schedule status (e.g., "Webhook execution time exhausted") |
+| `status` | string | Current status of the schedule: `"active"`, `"inactive"`, `"paused"`, `"completed"`, or `"expired"` |
+| `type` | string | Type of schedule target: `"webhook"` or `"workflow"` |
+| `model_uuid` | string | UUID of the webhook or workflow template being scheduled |
+| `driver_type` | string | Schedule driver type: `"interval"`, `"cron"`, `"clocked"`, `"solar"`, or `"debounce"` |
+| `last_run_at` | string \| null | ISO 8601 timestamp of the last execution (UTC) |
+| `next_run_at` | string \| null | ISO 8601 timestamp of the next scheduled execution (UTC) |
+| `total_schedule_triggered` | integer | Total number of times the schedule has been triggered |
+| `locale_timezone_converted_details` | object | Timezone-converted details for the preferred timezone |
+| `schedule_uuid` | string | Unique identifier for the schedule |
+
+### Locale Timezone Converted Details
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `preferred_timezone` | string | IANA timezone identifier used for conversion |
+| `time_left_to_trigger` | string \| null | Human-readable time until next execution (e.g., "2 hours 30 minutes") |
+| `last_run_at_by_preferred_timezone` | string \| null | Last run time converted to preferred timezone (ISO 8601 with offset) |
+| `next_run_at_by_preferred_timezone` | string \| null | Next run time converted to preferred timezone (ISO 8601 with offset) |
+
+### Meta object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `page` | integer | Current page number |
+| `total_count` | integer | Total number of schedules matching the filter |
+| `per_page` | integer | Number of items per page |
+| `total_pages` | integer | Total number of pages |
+| `has_next` | boolean | Whether there is a next page |
+| `has_prev` | boolean | Whether there is a previous page |
+
+### Root fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `data` | array | Array of schedule objects |
+| `meta` | object | Pagination metadata |
+
+## Status Filter Options
+
+| Status | Description |
+|--------|-------------|
+| `"active"` | Schedule is running and executing according to its configuration |
+| `"inactive"` | Schedule is disabled and will not execute |
+| `"paused"` | Schedule is temporarily paused (may include a reason) |
+| `"completed"` | Schedule has completed (typically for one-off tasks) |
+| `"expired"` | Schedule has expired (termination rule met or past expiration date) |
+
+## Driver Types
+
+| Driver Type | Description |
+|-------------|-------------|
+| `"interval"` | Interval-based schedule (every N seconds/minutes/hours) |
+| `"cron"` | Cron expression-based schedule |
+| `"clocked"` | One-time scheduled task at specific date/time |
+| `"solar"` | Solar event-based schedule (sunrise, sunset, etc.) |
+| `"debounce"` | Debounce-based schedule |
+
+## Use Cases
+
+- **Monitor Active Schedules**: Get all currently running schedules
+- **Check Paused Schedules**: Identify schedules that are paused and why
+- **View Completed Tasks**: Review completed one-off tasks
+- **Audit Expired Schedules**: See schedules that have expired
+- **Track Schedule Status**: Monitor the status of all your schedules
+
+## Examples
+
+### Get All Active Schedules
+```bash
+GET /v1/api/get_active_schedules_paginatated/?filter_status=active&page=1
+```
+
+### Get All Paused Schedules
+```bash
+GET /v1/api/get_active_schedules_paginatated/?filter_status=paused&page=1
+```
+
+### Get All Completed Schedules
+```bash
+GET /v1/api/get_active_schedules_paginatated/?filter_status=completed&page=1
+```
+
+### Get All Inactive Schedules
+```bash
+GET /v1/api/get_active_schedules_paginatated/?filter_status=inactive&page=1
+```
+
+### Get All Expired Schedules
+```bash
+GET /v1/api/get_active_schedules_paginatated/?filter_status=expired&page=1
+```
+
+## Related Documentation
+
+- [Scheduling Overview](/docs/api-reference/scheduling/overview) - Learn about scheduling types and features
+- [Add Interval Schedule](/docs/api-reference/scheduling/add-interval-schedule) - Create interval-based schedules
+- [Add Cron Schedule](/docs/api-reference/scheduling/add-cron-schedule) - Create cron-based schedules
