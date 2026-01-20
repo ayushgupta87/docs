@@ -2854,7 +2854,7 @@
             "type": "string",
             "description": "Longitude for solar window rules (decimal degrees)"
           },
-          "max_run_to_termainate_after": {
+          "max_run_to_terminate_after": {
             "type": "integer",
             "description": "Maximum number of runs before termination (for termination rules)"
           },
