@@ -178,7 +178,7 @@ Concurrent mode allows multiple steps to execute simultaneously:
 {
   "success": true,
   "details": "Webhook Template added",
-  "worflow_uuid": "{{worflow_uuid}}"
+  "workflow_uuid": "{{workflow_uuid}}"
 }
 ```
 
@@ -200,7 +200,7 @@ Concurrent mode allows multiple steps to execute simultaneously:
 |-------|------|-------------|
 | `success` | boolean | Indicates if the request was successful |
 | `details` | string | Success message (only present on success) |
-| `worflow_uuid` | string | Unique identifier for the created workflow template (only present on success) |
+| `workflow_uuid` | string | Unique identifier for the created workflow template (only present on success) |
 | `error` | string | Error message (only present on error) |
 | `workflow_uuid` | string | UUID of the existing workflow with the same name (only present on error) |
 
