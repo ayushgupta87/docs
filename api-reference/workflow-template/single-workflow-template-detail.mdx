@@ -122,154 +122,44 @@ echo $response;
 ```json
 {
   "data": {
+    "timezone": "{{timezone}}",
+    "inserted_at": "{{inserted_at}}",
     "workflow_name": "{{workflow_name}}",
-    "runtype": "{{runtype}}",
+    "workflow_uuid": "{{workflow_uuid}}",
     "workflow_description": "{{workflow_description}}",
+    "runtype": "{{runtype}}",
     "workflow_steps": [
       {
         "index": 0,
+        "timezone": "{{timezone}}",
+        "inserted_at": "{{inserted_at}}",
+        "step_identifier": "{{step_identifier}}",
         "human_approval_required": false,
-        "delay_to_next_step": 2,
-        "step_identifier": "validate-payment",
-        "execution_conditions": [
-          {
-            "value": "100",
-            "operator": "gte",
-            "field": "amount"
-          }
-        ],
-        "step_uuid": "{{step_uuid_1}}",
+        "delay_to_next_step": {{delay_to_next_step}},
         "webhook": {
-          "path": "/api/payments/validate",
+          "path": "{{path}}",
           "domain": {
-            "protocol": "https",
+            "protocol": "{{protocol}}",
             "domain": "{{domain}}"
           },
-          "method": "POST",
-          "webhook_name": "Validate Payment",
-          "expected_system_variables": ["api_key"],
-          "headers_json": {
-            "Authorization": "Bearer {{ #api_key }}",
-            "Content-Type": "application/json"
-          },
+          "method": "{{method}}",
+          "webhook_uuid": "{{webhook_uuid}}",
+          "webhook_name": "{{webhook_name}}",
+          "headers_json": {},
           "query_params_json": {},
-          "request_body_json": {
-            "amount": "{{ initial.amount }}",
-            "currency": "{{ initial.currency }}"
-          },
-          "webhook_uuid": "{{webhook_uuid_1}}"
-        }
-      },
-      {
-        "index": 1,
-        "human_approval_required": false,
-        "delay_to_next_step": 3,
-        "step_identifier": "process-order",
+          "request_body_json": {},
+          "expected_system_variables": []
+        },
+        "step_uuid": "{{step_uuid}}",
         "execution_conditions": [
           {
-            "value": "success",
-            "operator": "eq",
-            "field": "step.response.payment_status"
+            "value": "{{value}}",
+            "operator": "{{operator}}",
+            "field": "{{field}}"
           }
-        ],
-        "step_uuid": "{{step_uuid_2}}",
-        "webhook": {
-          "path": "/api/orders/create",
-          "domain": {
-            "protocol": "https",
-            "domain": "{{domain}}"
-          },
-          "method": "POST",
-          "webhook_name": "Create Order",
-          "expected_system_variables": ["api_key"],
-          "headers_json": {
-            "Authorization": "Bearer {{ #api_key }}",
-            "X-Request-ID": "{{ step.response.payment_id }}"
-          },
-          "query_params_json": {
-            "timestamp": "{{ step.response.created_at }}"
-          },
-          "request_body_json": {
-            "payment_id": "{{ step.response.payment_id }}",
-            "user_id": "{{ initial.user_id }}",
-            "items": "{{ initial.items }}"
-          },
-          "webhook_uuid": "{{webhook_uuid_2}}"
-        }
-      },
-      {
-        "index": 2,
-        "human_approval_required": true,
-        "delay_to_next_step": 1,
-        "step_identifier": "send-notification",
-        "execution_conditions": [
-          {
-            "value": "completed",
-            "operator": "eq",
-            "field": "step.response.order_status"
-          },
-          {
-            "value": "1000",
-            "operator": "gt",
-            "field": "initial.amount"
-          }
-        ],
-        "step_uuid": "{{step_uuid_3}}",
-        "webhook": {
-          "path": "/api/notifications/send",
-          "domain": {
-            "protocol": "https",
-            "domain": "{{domain}}"
-          },
-          "method": "POST",
-          "webhook_name": "Send High-Value Notification",
-          "expected_system_variables": ["notification_api_key"],
-          "headers_json": {
-            "Authorization": "Bearer {{ #notification_api_key }}",
-            "X-Priority": "high"
-          },
-          "query_params_json": {},
-          "request_body_json": {
-            "order_id": "{{ step.response.order_id }}",
-            "customer_email": "{{ initial.customer_email }}",
-            "total_amount": "{{ initial.amount }}",
-            "message": "Your high-value order has been processed"
-          },
-          "webhook_uuid": "{{webhook_uuid_3}}"
-        }
-      },
-      {
-        "index": 3,
-        "human_approval_required": false,
-        "delay_to_next_step": 0,
-        "step_identifier": "update-inventory",
-        "execution_conditions": [],
-        "step_uuid": "{{step_uuid_4}}",
-        "webhook": {
-          "path": "/api/inventory/update",
-          "domain": {
-            "protocol": "https",
-            "domain": "{{domain}}"
-          },
-          "method": "PUT",
-          "webhook_name": "Update Inventory",
-          "expected_system_variables": ["inventory_api_key"],
-          "headers_json": {
-            "Authorization": "Bearer {{ #inventory_api_key }}"
-          },
-          "query_params_json": {
-            "warehouse": "{{ initial.warehouse_id }}"
-          },
-          "request_body_json": {
-            "order_id": "{{ step.response.order_id }}",
-            "items": "{{ initial.items }}",
-            "action": "decrement"
-          },
-          "webhook_uuid": "{{webhook_uuid_4}}"
-        }
+        ]
       }
-    ],
-    "workflow_uuid": "{{workflow_uuid}}"
+    ]
   },
   "success": true
 }
@@ -290,23 +180,27 @@ echo $response;
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `timezone` | string | IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone) |
+| `inserted_at` | string | ISO 8601 timestamp when the workflow template was created (in your brand's selected timezone with offset) |
 | `workflow_name` | string | Name of the workflow template |
-| `runtype` | string | Execution mode: `"fifo_sequential"` or `"concurrently"` |
-| `workflow_description` | string | Description of the workflow template |
-| `workflow_steps` | array | Array of workflow steps, ordered by index |
 | `workflow_uuid` | string | Unique identifier for the workflow template |
+| `workflow_description` | string | Description of the workflow template |
+| `runtype` | string | Execution mode: `"fifo_sequential"` or `"concurrently"` |
+| `workflow_steps` | array | Array of workflow steps, ordered by index |
 
 ### Workflow step object
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `index` | integer | Priority index for FIFO execution order (0 is first) |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone) |
+| `inserted_at` | string | ISO 8601 timestamp when the workflow step was created (in your brand's selected timezone with offset) |
+| `step_identifier` | string | Unique identifier (slug) for this step |
 | `human_approval_required` | boolean | Whether this step requires human approval |
 | `delay_to_next_step` | integer | Delay in seconds before executing the next step |
-| `step_identifier` | string | Unique identifier (slug) for this step |
-| `execution_conditions` | array | Array of conditions that must be met for this step to execute |
-| `step_uuid` | string | Unique identifier for the workflow step |
 | `webhook` | object | Webhook configuration for this step |
+| `step_uuid` | string | Unique identifier for the workflow step |
+| `execution_conditions` | array | Array of conditions that must be met for this step to execute |
 
 ### Execution condition object
 

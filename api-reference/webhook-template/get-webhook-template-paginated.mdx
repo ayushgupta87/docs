@@ -110,6 +110,7 @@ echo $response;
       "path": "{{path}}",
       "method": "{{method}}",
       "inserted_at": "{{inserted_at}}",
+      "webhook_uuid": "{{webhook_uuid}}",
       "webhook_name": "{{webhook_name}}",
       "webhook_description": "{{webhook_description}}",
       "request_timeout_in_milliseconds": {{request_timeout_in_milliseconds}},
@@ -119,8 +120,7 @@ echo $response;
       "domain_details": {
         "domain": "{{domain}}",
         "protocol_type": "{{protocol_type}}"
-      },
-      "webhook_uuid": "{{webhook_uuid}}"
+      }
     }
   ],
   "meta": {
@@ -131,7 +131,8 @@ echo $response;
     "has_next": {{has_next}},
     "has_prev": {{has_prev}}
   },
-  "success": true
+  "success": true,
+  "timezone": "{{timezone}}"
 }
 ```
 
@@ -145,7 +146,7 @@ echo $response;
 |-------|------|-------------|
 | `path` | string | URL path for the webhook template |
 | `method` | string | HTTP method (e.g., "GET", "POST", "PUT", "DELETE") |
-| `inserted_at` | string | ISO 8601 timestamp when the template was created |
+| `inserted_at` | string | ISO 8601 timestamp when the template was created (in your brand's selected timezone with offset) |
 | `webhook_name` | string | Name of the webhook template |
 | `webhook_description` | string | Description of the webhook template |
 | `request_timeout_in_milliseconds` | integer | Request timeout in milliseconds |
@@ -175,3 +176,23 @@ echo $response;
 | `success` | boolean | Indicates if the request was successful |
 | `data` | array | Array of webhook template objects |
 | `meta` | object | Pagination metadata |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone) |
+## Error Responses
+
+If the page is out of range, you will receive:
+
+```json
+{
+  "success": false,
+  "timezone": "{{timezone}}",
+  "error": "Page out of range",
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
+  }
+}
+```

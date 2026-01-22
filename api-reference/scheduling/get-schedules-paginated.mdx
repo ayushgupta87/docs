@@ -129,14 +129,15 @@ echo $response;
     }
   ],
   "meta": {
-    "page": 1,
-    "total_count": 1,
-    "per_page": 20,
-    "total_pages": 1,
-    "has_next": false,
-    "has_prev": false
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
   },
-  "success": true
+  "success": true,
+  "timezone": "{{timezone}}"
 }
 ```
 
@@ -186,6 +187,27 @@ echo $response;
 | `success` | boolean | Indicates if the request was successful |
 | `data` | array | Array of schedule objects |
 | `meta` | object | Pagination metadata |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone) |
+
+## Error Responses
+
+If the page is out of range, you will receive:
+
+```json
+{
+  "success": false,
+  "timezone": "{{timezone}}",
+  "error": "Page out of range",
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
+  }
+}
+```
 
 ## Status Filter Options
 

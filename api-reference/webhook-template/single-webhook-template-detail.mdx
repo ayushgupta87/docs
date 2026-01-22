@@ -124,8 +124,24 @@ echo $response;
   "data": {
     "path": "{{path}}",
     "method": "{{method}}",
+    "timezone": "{{timezone}}",
     "inserted_at": "{{inserted_at}}",
+    "webhook_uuid": "{{webhook_uuid}}",
     "webhook_name": "{{webhook_name}}",
+    "headers_json": {
+      "Authentication": "Bearer {{ #key }}"
+    },
+    "query_params_json": {
+      "variable_path": "{{ initial.test_path }}"
+    },
+    "request_body_json": {
+      "key1": "{{value1}}",
+      "key2": "{{value2}}",
+      "key3": "{{ initial.test_name }}",
+      "key4": "{{ initial.test_name2 }}",
+      "key5": "{{ #key }}"
+    },
+    "expected_system_variables": [],
     "webhook_description": "{{webhook_description}}",
     "request_timeout_in_milliseconds": {{request_timeout_in_milliseconds}},
     "max_retries": {{max_retries}},
@@ -134,12 +150,7 @@ echo $response;
     "domain_details": {
       "domain": "{{domain}}",
       "protocol_type": "{{protocol_type}}"
-    },
-    "expected_system_variables": [],
-    "headers_json": {},
-    "query_params_json": {},
-    "request_body_json": {},
-    "webhook_uuid": "{{webhook_uuid}}"
+    }
   },
   "success": true
 }
@@ -155,8 +166,14 @@ echo $response;
 |-------|------|-------------|
 | `path` | string | URL path for the webhook template |
 | `method` | string | HTTP method (e.g., "GET", "POST", "PUT", "DELETE") |
-| `inserted_at` | string | ISO 8601 timestamp when the template was created |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone) |
+| `inserted_at` | string | ISO 8601 timestamp when the template was created (in your brand's selected timezone with offset) |
+| `webhook_uuid` | string | Unique identifier for the webhook template |
 | `webhook_name` | string | Name of the webhook template |
+| `headers_json` | object | HTTP headers as JSON object (supports template variables) |
+| `query_params_json` | object | Query parameters as JSON object (supports template variables) |
+| `request_body_json` | object | Request body as JSON object (supports template variables) |
+| `expected_system_variables` | array | Array of system secret variable names expected in this template (e.g., `["api_key", "service_token"]`) |
 | `webhook_description` | string | Description of the webhook template |
 | `request_timeout_in_milliseconds` | integer | Request timeout in milliseconds |
 | `max_retries` | integer | Maximum number of retry attempts |
@@ -165,11 +182,6 @@ echo $response;
 | `domain_details` | object | Domain information associated with this template |
 | `domain_details.domain` | string | Domain name |
 | `domain_details.protocol_type` | string | Protocol type (e.g., "https", "http") |
-| `expected_system_variables` | array | Array of system secret variable names expected in this template (e.g., `["api_key", "service_token"]`) |
-| `headers_json` | object | HTTP headers as JSON object (supports template variables) |
-| `query_params_json` | object | Query parameters as JSON object (supports template variables) |
-| `request_body_json` | object | Request body as JSON object (supports template variables) |
-| `webhook_uuid` | string | Unique identifier for the webhook template |
 
 ### Root fields
 

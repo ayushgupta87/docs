@@ -113,6 +113,35 @@ All endpoints use a consistent error format:
   Learn how to handle errors, implement retry logic, and follow best practices
 </Card>
 
+## Timezone
+
+All timestamps in API responses are returned according to your brand's selected timezone. HookPulse supports all IANA timezone identifiers, allowing you to configure your brand's timezone preference in the dashboard.
+
+### How it works
+
+- **Brand Timezone**: Each brand can set its preferred timezone in the HookPulse dashboard
+- **Response Format**: All timestamp fields in API responses (e.g., `inserted_at`, `created_at`, `updated_at`, `last_run_at`) are returned in ISO 8601 format with the timezone offset matching your brand's selected timezone
+- **Timezone Field**: Many API responses include a `timezone` field at the root level indicating the IANA timezone identifier used for the timestamps
+- **IANA Support**: HookPulse supports all 500+ IANA timezone identifiers (e.g., `America/New_York`, `Europe/London`, `Asia/Kolkata`, `UTC`)
+
+### Example
+
+If your brand's timezone is set to `Asia/Kolkata` (UTC+5:30), timestamps will be returned like:
+
+```json
+{
+  "data": [...],
+  "timezone": "Asia/Kolkata",
+  "inserted_at": "2026-01-20T21:39:24+05:30"
+}
+```
+
+The timezone offset (`+05:30`) indicates that the timestamp is in your brand's selected timezone.
+
+<Note>
+You can change your brand's timezone preference at any time in the HookPulse dashboard. All future API responses will reflect the new timezone setting.
+</Note>
+
 ## HTTP status codes
 
 The API uses standard HTTP status codes:
@@ -129,22 +158,57 @@ The API uses standard HTTP status codes:
 
 ## Pagination
 
-List endpoints support pagination using `limit` and `offset` query parameters:
+List endpoints support page-based pagination using the `page` query parameter:
 
 ```bash
-GET /resources?limit=20&offset=0
+GET /v1/api/get_secrets_paginated/?page=1
 ```
 
-Response includes pagination metadata:
+Response includes pagination metadata in the `meta` object:
 
 ```json
 {
   "data": [...],
-  "pagination": {
-    "limit": 20,
-    "offset": 0,
-    "total": 100,
-    "has_more": true
+  "meta": {
+    "page": 1,
+    "total_count": 100,
+    "per_page": 20,
+    "total_pages": 5,
+    "has_next": true,
+    "has_prev": false
+  },
+  "success": true,
+  "timezone": "Asia/Kolkata"
+}
+```
+
+### Pagination Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `page` | integer | Current page number (starts from 1) |
+| `total_count` | integer | Total number of items across all pages |
+| `per_page` | integer | Number of items per page (typically 20) |
+| `total_pages` | integer | Total number of pages |
+| `has_next` | boolean | Whether there is a next page available |
+| `has_prev` | boolean | Whether there is a previous page available |
+
+### Error Handling
+
+If you request a page that doesn't exist (out of range), you'll receive an error response:
+
+```json
+{
+  "success": false,
+  "timezone": "{{timezone}}",
+  "error": "Page out of range",
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
   }
 }
 ```

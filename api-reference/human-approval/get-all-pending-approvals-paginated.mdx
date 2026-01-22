@@ -119,14 +119,15 @@ echo $response;
     }
   ],
   "meta": {
-    "page": 1,
+    "page": {{page}},
     "total_count": {{total_count}},
-    "per_page": 20,
+    "per_page": {{per_page}},
     "total_pages": {{total_pages}},
     "has_next": {{has_next}},
     "has_prev": {{has_prev}}
   },
-  "success": true
+  "success": true,
+  "timezone": "{{timezone}}"
 }
 ```
 
@@ -146,7 +147,7 @@ echo $response;
 | `status` | string | Execution status (always `"waiting_approval"` for pending approvals) |
 | `human_approval_required` | boolean | Whether human approval is required for this step |
 | `delay_to_next_step` | integer | Delay in seconds before proceeding to the next step after approval |
-| `inserted_at` | string | ISO 8601 timestamp when the execution plan was created |
+| `inserted_at` | string | ISO 8601 timestamp when the execution plan was created (in your brand's selected timezone with offset) |
 
 ### Meta object
 
@@ -166,6 +167,7 @@ echo $response;
 | `success` | boolean | Indicates if the request was successful |
 | `data` | array | Array of pending approval objects |
 | `meta` | object | Pagination metadata |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone) |
 
 ## Error Responses
 
@@ -174,14 +176,15 @@ If the page is out of range, you will receive:
 ```json
 {
   "success": false,
+  "timezone": "{{timezone}}",
   "error": "Page out of range",
   "meta": {
     "page": {{page}},
     "total_count": {{total_count}},
-    "per_page": 20,
+    "per_page": {{per_page}},
     "total_pages": {{total_pages}},
-    "has_next": false,
-    "has_prev": false
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
   }
 }
 ```

@@ -107,10 +107,19 @@ echo $response;
 {
   "data": [
     {
+      "inserted_at": "{{inserted_at}}",
       "workflow_name": "{{workflow_name}}",
-      "runtype": "{{runtype}}",
-      "workflow_description": "{{workflow_description}}",
       "workflow_uuid": "{{workflow_uuid}}",
+      "workflow_description": "{{workflow_description}}",
+      "runtype": "{{runtype}}",
+      "total_workflow_steps": {{total_workflow_steps}}
+    },
+    {
+      "inserted_at": "{{inserted_at}}",
+      "workflow_name": "{{workflow_name}}",
+      "workflow_uuid": "{{workflow_uuid}}",
+      "workflow_description": "{{workflow_description}}",
+      "runtype": "{{runtype}}",
       "total_workflow_steps": {{total_workflow_steps}}
     }
   ],
@@ -122,7 +131,8 @@ echo $response;
     "has_next": {{has_next}},
     "has_prev": {{has_prev}}
   },
-  "success": true
+  "success": true,
+  "timezone": "{{timezone}}"
 }
 ```
 
@@ -134,10 +144,11 @@ echo $response;
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `inserted_at` | string | ISO 8601 timestamp when the workflow template was created (in your brand's selected timezone with offset) |
 | `workflow_name` | string | Name of the workflow template |
-| `runtype` | string | Execution mode: `"fifo_sequential"` for strict sequential order, or `"concurrently"` for parallel execution |
-| `workflow_description` | string | Description of the workflow template |
 | `workflow_uuid` | string | Unique identifier for the workflow template |
+| `workflow_description` | string | Description of the workflow template |
+| `runtype` | string | Execution mode: `"fifo_sequential"` for strict sequential order, or `"concurrently"` for parallel execution |
 | `total_workflow_steps` | integer | Total number of steps configured in the workflow |
 
 ### Meta object
@@ -158,6 +169,27 @@ echo $response;
 | `success` | boolean | Indicates if the request was successful |
 | `data` | array | Array of workflow template objects |
 | `meta` | object | Pagination metadata |
+| `timezone` | string | IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone) |
+
+## Error Responses
+
+If the page is out of range, you will receive:
+
+```json
+{
+  "success": false,
+  "timezone": "{{timezone}}",
+  "error": "Page out of range",
+  "meta": {
+    "page": {{page}},
+    "total_count": {{total_count}},
+    "per_page": {{per_page}},
+    "total_pages": {{total_pages}},
+    "has_next": {{has_next}},
+    "has_prev": {{has_prev}}
+  }
+}
+```
 
 ## Execution Modes
 

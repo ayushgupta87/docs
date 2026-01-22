@@ -1565,6 +1565,10 @@
           "success": {
             "type": "boolean",
             "description": "Indicates if the request was successful"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
@@ -1699,6 +1703,10 @@
           },
           "meta": {
             "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
@@ -1716,7 +1724,7 @@
           "inserted_at": {
             "type": "string",
             "format": "date-time",
-            "description": "ISO 8601 timestamp when the template was created"
+            "description": "ISO 8601 timestamp when the template was created (in your brand's selected timezone with offset)"
           },
           "webhook_name": {
             "type": "string",
@@ -1797,10 +1805,18 @@
             "type": "string",
             "description": "HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')"
           },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone)"
+          },
           "inserted_at": {
             "type": "string",
             "format": "date-time",
-            "description": "ISO 8601 timestamp when the template was created"
+            "description": "ISO 8601 timestamp when the template was created (in your brand's selected timezone with offset)"
+          },
+          "webhook_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the webhook template"
           },
           "webhook_name": {
             "type": "string",
@@ -1990,6 +2006,10 @@
           },
           "meta": {
             "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
@@ -2003,13 +2023,13 @@
           "inserted_at": {
             "type": "string",
             "format": "date-time",
-            "description": "ISO 8601 timestamp when the secret was created"
+            "description": "ISO 8601 timestamp when the secret was created (in your brand's selected timezone with offset)"
           },
           "call_key": {
             "type": "string",
             "description": "Template syntax to use this secret in webhooks (e.g., '{{ ##key }}')"
           },
-          "system_secret_uuid": {
+          "secret_uuid": {
             "type": "string",
             "description": "Unique identifier for the secret"
           }
@@ -2229,15 +2249,32 @@
           "success": {
             "type": "boolean",
             "description": "Indicates if the request was successful"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
       "WorkflowTemplateListItem": {
         "type": "object",
         "properties": {
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the workflow template was created (in your brand's selected timezone with offset)"
+          },
           "workflow_name": {
             "type": "string",
             "description": "Name of the workflow template"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow template"
+          },
+          "workflow_description": {
+            "type": "string",
+            "description": "Description of the workflow template"
           },
           "runtype": {
             "type": "string",
@@ -2246,14 +2283,6 @@
               "concurrently"
             ],
             "description": "Execution mode: 'fifo_sequential' for strict sequential order, 'concurrently' for parallel execution"
-          },
-          "workflow_description": {
-            "type": "string",
-            "description": "Description of the workflow template"
-          },
-          "workflow_uuid": {
-            "type": "string",
-            "description": "Unique identifier for the workflow template"
           },
           "total_workflow_steps": {
             "type": "integer",
@@ -2449,9 +2478,26 @@
       "WorkflowTemplateDetail": {
         "type": "object",
         "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone)"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the workflow template was created (in your brand's selected timezone with offset)"
+          },
           "workflow_name": {
             "type": "string",
             "description": "Name of the workflow template"
+          },
+          "workflow_uuid": {
+            "type": "string",
+            "description": "Unique identifier for the workflow template"
+          },
+          "workflow_description": {
+            "type": "string",
+            "description": "Description of the workflow template"
           },
           "runtype": {
             "type": "string",
@@ -2461,20 +2507,12 @@
             ],
             "description": "Execution mode: 'fifo_sequential' for strict sequential order, 'concurrently' for parallel execution"
           },
-          "workflow_description": {
-            "type": "string",
-            "description": "Description of the workflow template"
-          },
           "workflow_steps": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/WorkflowStepDetail"
             },
             "description": "Array of workflow steps"
-          },
-          "workflow_uuid": {
-            "type": "string",
-            "description": "Unique identifier for the workflow template"
           }
         }
       },
@@ -2485,6 +2523,19 @@
             "type": "integer",
             "description": "Priority index for FIFO execution order"
           },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for timestamps (matches your brand's selected timezone)"
+          },
+          "inserted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the workflow step was created (in your brand's selected timezone with offset)"
+          },
+          "step_identifier": {
+            "type": "string",
+            "description": "Unique identifier (slug) for this step"
+          },
           "human_approval_required": {
             "type": "boolean",
             "description": "Whether this step requires human approval"
@@ -2493,9 +2544,12 @@
             "type": "integer",
             "description": "Delay in seconds before executing the next step"
           },
-          "step_identifier": {
+          "webhook": {
+            "$ref": "#/components/schemas/WorkflowStepWebhook"
+          },
+          "step_uuid": {
             "type": "string",
-            "description": "Unique identifier (slug) for this step"
+            "description": "Unique identifier for the workflow step"
           },
           "execution_conditions": {
             "type": "array",
@@ -2503,13 +2557,6 @@
               "$ref": "#/components/schemas/ExecutionCondition"
             },
             "description": "Array of execution conditions for this step"
-          },
-          "step_uuid": {
-            "type": "string",
-            "description": "Unique identifier for the workflow step"
-          },
-          "webhook": {
-            "$ref": "#/components/schemas/WorkflowStepWebhook"
           }
         }
       },
@@ -2950,6 +2997,10 @@
           "success": {
             "type": "boolean",
             "description": "Indicates if the request was successful"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
@@ -3299,6 +3350,10 @@
           "success": {
             "type": "boolean",
             "description": "Indicates if the request was successful"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           }
         }
       },
@@ -3343,7 +3398,7 @@
           "inserted_at": {
             "type": "string",
             "format": "date-time",
-            "description": "ISO 8601 timestamp when the execution plan was created"
+            "description": "ISO 8601 timestamp when the execution plan was created (in your brand's selected timezone with offset)"
           }
         }
       },
@@ -3353,6 +3408,10 @@
           "success": {
             "type": "boolean",
             "description": "Indicates if the request was successful"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone identifier indicating the timezone used for all timestamps in the response (matches your brand's selected timezone)"
           },
           "error": {
             "type": "string",
