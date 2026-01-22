@@ -3,7 +3,7 @@ title: 'Add Schedule (Clocked)'
 openapi: 'POST /v1/api/add_clocked_schedule/'
 ---
 
-Create a one-time scheduled task that executes a webhook or workflow at a specific date and time. Clocked schedules are automatically set as one-off tasks.
+Create a one-time scheduled task that executes a webhook or workflow at a specific date and time. Clocked schedules are automatically one-off tasks (they execute once and then complete).
 
 ## Base URL
 
@@ -23,11 +23,10 @@ curl -X POST "https://api.hookpulse.io/v1/api/add_clocked_schedule/" \
   -H "x-brand-uuid: {{x-brand-uuid}}" \
   -H "Content-Type: application/json" \
   -d '{
-    "clocked_run_at": "2024-12-25T00:00:00Z",
+    "clocked_run_at": "{{clocked_run_at}}",
     "clocked_timezone": "Asia/Kolkata",
-    "is_one_off_task": false,
     "schedule_to": "webhook",
-    "model_to_schedule_uuid": "{{webhook_uuid}}",
+    "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
     "initial_context_template": {
       "key": "value"
     }
@@ -43,11 +42,10 @@ const response = await fetch('https://api.hookpulse.io/v1/api/add_clocked_schedu
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    clocked_run_at: '2024-12-25T00:00:00Z',
+    clocked_run_at: '{{clocked_run_at}}',
     clocked_timezone: 'Asia/Kolkata',
-    is_one_off_task: false,
     schedule_to: 'webhook',
-    model_to_schedule_uuid: '{{webhook_uuid}}',
+    model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
     initial_context_template: {
       key: 'value'
     }
@@ -68,11 +66,10 @@ headers = {
     'Content-Type': 'application/json'
 }
 payload = {
-    'clocked_run_at': '2024-12-25T00:00:00Z',
+    'clocked_run_at': '{{clocked_run_at}}',
     'clocked_timezone': 'Asia/Kolkata',
-    'is_one_off_task': False,
     'schedule_to': 'webhook',
-    'model_to_schedule_uuid': '{{webhook_uuid}}',
+    'model_to_schedule_uuid': '{{model_to_schedule_uuid}}',
     'initial_context_template': {
         'key': 'value'
     }
@@ -96,11 +93,10 @@ request['x-hookpulse-api-key'] = '{{x-hookpulse-api-key}}'
 request['x-brand-uuid'] = '{{x-brand-uuid}}'
 request['Content-Type'] = 'application/json'
 request.body = {
-  clocked_run_at: '2024-12-25T00:00:00Z',
+  clocked_run_at: '{{clocked_run_at}}',
   clocked_timezone: 'Asia/Kolkata',
-  is_one_off_task: false,
   schedule_to: 'webhook',
-  model_to_schedule_uuid: '{{webhook_uuid}}',
+  model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
   initial_context_template: {
     key: 'value'
   }
@@ -115,11 +111,10 @@ puts JSON.parse(response.body)
 
 $url = "https://api.hookpulse.io/v1/api/add_clocked_schedule/";
 $data = [
-    'clocked_run_at' => '2024-12-25T00:00:00Z',
+    'clocked_run_at' => '{{clocked_run_at}}',
     'clocked_timezone' => 'Asia/Kolkata',
-    'is_one_off_task' => false,
     'schedule_to' => 'webhook',
-    'model_to_schedule_uuid' => '{{webhook_uuid}}',
+    'model_to_schedule_uuid' => '{{model_to_schedule_uuid}}',
     'initial_context_template' => [
         'key' => 'value'
     ]
@@ -150,9 +145,8 @@ echo $response;
 |-------|------|----------|-------------|
 | `clocked_run_at` | string | Yes | ISO 8601 datetime string for when to execute (e.g., `"2024-12-25T00:00:00Z"`) |
 | `clocked_timezone` | string | Yes | IANA timezone identifier (use [Get Timezone Options](/docs/api-reference/scheduling/timezone-options) to get valid values) |
-| `is_one_off_task` | boolean | Yes | Whether this is a one-time task (typically `true` for clocked schedules) |
 | `schedule_to` | string | Yes | Target type: `"webhook"` or `"workflow"` |
-| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule |
+| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule (as per `schedule_to`) |
 | `initial_context_template` | object | No | Key-value pairs passed as `{{ initial.key }}` variables to the webhook/workflow |
 
 ## Example response
@@ -193,7 +187,7 @@ HookPulse supports all 500+ IANA timezones. Use the [Get Timezone Options](/docs
 
 ## One-Off Tasks
 
-Clocked schedules are typically one-off tasks that execute once at the specified time. After execution, the schedule status becomes `"completed"`.
+Clocked schedules are automatically one-off tasks that execute once at the specified time. After execution, the schedule status becomes `"completed"`. The `is_one_off_task` field is not required for clocked schedules as they are always one-time executions.
 
 ## Initial Context Template
 
@@ -221,22 +215,20 @@ You can also combine with:
 ### Christmas Day Task
 ```json
 {
-  "clocked_run_at": "2024-12-25T00:00:00Z",
+  "clocked_run_at": "{{clocked_run_at}}",
   "clocked_timezone": "UTC",
-  "is_one_off_task": true,
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
 ### New Year's Eve at Midnight
 ```json
 {
-  "clocked_run_at": "2025-01-01T00:00:00Z",
+  "clocked_run_at": "{{clocked_run_at}}",
   "clocked_timezone": "America/New_York",
-  "is_one_off_task": true,
   "schedule_to": "workflow",
-  "model_to_schedule_uuid": "{{workflow_uuid}}",
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
   "initial_context_template": {
     "event": "new_year",
     "year": "2025"
@@ -247,11 +239,10 @@ You can also combine with:
 ### Specific Business Time
 ```json
 {
-  "clocked_run_at": "2024-12-20T14:30:00Z",
+  "clocked_run_at": "{{clocked_run_at}}",
   "clocked_timezone": "Asia/Kolkata",
-  "is_one_off_task": true,
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 

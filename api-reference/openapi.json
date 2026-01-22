@@ -1874,10 +1874,6 @@
           "request_body_json": {
             "type": "object",
             "description": "Request body as JSON object (supports template variables)"
-          },
-          "webhook_uuid": {
-            "type": "string",
-            "description": "Unique identifier for the webhook template"
           }
         }
       },

@@ -25,8 +25,9 @@ curl -X POST "https://api.hookpulse.io/v1/api/add_cron_schedule/" \
   -d '{
     "cron_expression": "0 0 * * *",
     "cron_timezone": "Asia/Kolkata",
+    "is_one_off_task": false,
     "schedule_to": "webhook",
-    "model_to_schedule_uuid": "{{webhook_uuid}}",
+    "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
     "initial_context_template": {
       "key": "value"
     }
@@ -44,8 +45,9 @@ const response = await fetch('https://api.hookpulse.io/v1/api/add_cron_schedule/
   body: JSON.stringify({
     cron_expression: '0 0 * * *',
     cron_timezone: 'Asia/Kolkata',
+    is_one_off_task: false,
     schedule_to: 'webhook',
-    model_to_schedule_uuid: '{{webhook_uuid}}',
+    model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
     initial_context_template: {
       key: 'value'
     }
@@ -68,8 +70,9 @@ headers = {
 payload = {
     'cron_expression': '0 0 * * *',
     'cron_timezone': 'Asia/Kolkata',
+    'is_one_off_task': False,
     'schedule_to': 'webhook',
-    'model_to_schedule_uuid': '{{webhook_uuid}}',
+    'model_to_schedule_uuid': '{{model_to_schedule_uuid}}',
     'initial_context_template': {
         'key': 'value'
     }
@@ -95,8 +98,9 @@ request['Content-Type'] = 'application/json'
 request.body = {
   cron_expression: '0 0 * * *',
   cron_timezone: 'Asia/Kolkata',
+  is_one_off_task: false,
   schedule_to: 'webhook',
-  model_to_schedule_uuid: '{{webhook_uuid}}',
+  model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
   initial_context_template: {
     key: 'value'
   }
@@ -113,8 +117,9 @@ $url = "https://api.hookpulse.io/v1/api/add_cron_schedule/";
 $data = [
     'cron_expression' => '0 0 * * *',
     'cron_timezone' => 'Asia/Kolkata',
+    'is_one_off_task' => false,
     'schedule_to' => 'webhook',
-    'model_to_schedule_uuid' => '{{webhook_uuid}}',
+    'model_to_schedule_uuid' => '{{model_to_schedule_uuid}}',
     'initial_context_template' => [
         'key' => 'value'
     ]
@@ -145,8 +150,9 @@ echo $response;
 |-------|------|----------|-------------|
 | `cron_expression` | string | Yes | Standard cron expression (e.g., `"0 0 * * *"` for daily at midnight) |
 | `cron_timezone` | string | Yes | IANA timezone identifier (use [Get Timezone Options](/docs/api-reference/scheduling/timezone-options) to get valid values) |
+| `is_one_off_task` | boolean | Yes | Set to `true` if the schedule should run only once, `false` for recurring execution |
 | `schedule_to` | string | Yes | Target type: `"webhook"` or `"workflow"` |
-| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule |
+| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule (as per `schedule_to`) |
 | `initial_context_template` | object | No | Key-value pairs passed as `{{ initial.key }}` variables to the webhook/workflow |
 
 ## Example response
@@ -231,36 +237,50 @@ You can also combine with:
 
 ## Examples
 
-### Daily at 9 AM (Business Days)
+### Daily at 9 AM (Business Days) - Recurring
 ```json
 {
   "cron_expression": "0 9 * * 1-5",
   "cron_timezone": "America/New_York",
+  "is_one_off_task": false,
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
-### Every Hour
+### Every Hour - Recurring
 ```json
 {
   "cron_expression": "0 * * * *",
   "cron_timezone": "UTC",
+  "is_one_off_task": false,
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
-### Monthly on 1st and 15th
+### Monthly on 1st and 15th - Recurring
 ```json
 {
   "cron_expression": "0 0 1,15 * *",
   "cron_timezone": "Asia/Kolkata",
+  "is_one_off_task": false,
   "schedule_to": "workflow",
-  "model_to_schedule_uuid": "{{workflow_uuid}}",
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
   "initial_context_template": {
     "billing_cycle": "bi-monthly"
   }
+}
+```
+
+### One-Time Execution at Specific Time
+```json
+{
+  "cron_expression": "0 9 1 1 *",
+  "cron_timezone": "America/New_York",
+  "is_one_off_task": true,
+  "schedule_to": "webhook",
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 

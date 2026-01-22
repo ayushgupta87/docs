@@ -22,6 +22,7 @@ Execute workflows/webhooks at regular intervals:
 
 - **Interval Value**: Number of units (e.g., 5)
 - **Interval Period**: Unit of time (`second`, `minute`, `hour`)
+- **Is One-Off Task**: Set to `true` for one-time execution, `false` for recurring
 - **Examples**: Every 5 minutes, every 2 hours, every 30 seconds
 
 **Use Cases:**
@@ -29,11 +30,20 @@ Execute workflows/webhooks at regular intervals:
 - Health checks
 - Regular reports
 - Cache refresh
+- One-time delayed execution
 
-**Example:**
+**Example (Recurring):**
 ```
 Interval: 15 minutes
+Is One-Off Task: false
 Triggers: 12:00, 12:15, 12:30, 12:45, 13:00...
+```
+
+**Example (One-Time):**
+```
+Interval: 5 minutes
+Is One-Off Task: true
+Triggers: Once after 5 minutes, then completes
 ```
 
 ### 2. Cron Scheduling
@@ -42,6 +52,7 @@ Execute workflows/webhooks using cron expressions:
 
 - **Cron Expression**: Standard cron syntax (e.g., `0 9 * * *` for daily at 9 AM)
 - **Timezone**: Specify timezone for accurate execution
+- **Is One-Off Task**: Set to `true` for one-time execution, `false` for recurring
 - **Flexibility**: Supports complex time patterns
 
 **Building Complex Cron Jobs:**
@@ -53,11 +64,20 @@ To build complex cron expressions easily, HookPulse provides a **Cron Expression
 - Weekly maintenance tasks
 - Monthly data processing
 - Complex recurring schedules
+- One-time scheduled execution
 
-**Example:**
+**Example (Recurring):**
 ```
 Cron: 0 9 * * 1-5 (Every weekday at 9 AM)
 Timezone: America/New_York
+Is One-Off Task: false
+```
+
+**Example (One-Time):**
+```
+Cron: 0 9 1 1 * (January 1st at 9 AM)
+Timezone: America/New_York
+Is One-Off Task: true
 ```
 
 ### 3. Clocked Scheduling
@@ -66,7 +86,7 @@ Execute workflows/webhooks at a specific date and time:
 
 - **Clocked Run At**: Exact datetime for execution
 - **Timezone**: Timezone for the scheduled time
-- **One-Off Task**: Automatically set as a one-time execution
+- **One-Off Task**: Automatically one-off (always executes once)
 
 **Use Cases:**
 - One-time scheduled tasks
@@ -74,11 +94,13 @@ Execute workflows/webhooks at a specific date and time:
 - Scheduled maintenance windows
 - Time-specific events
 
+**Note:** Clocked schedules are automatically one-off tasks. The `is_one_off_task` field is not required for clocked schedules as they always execute once and then complete.
+
 **Example:**
 ```
 Clocked Run At: 2024-12-25 00:00:00
 Timezone: UTC
-Type: One-off task
+Type: Automatically one-off (no is_one_off_task field needed)
 ```
 
 ### 4. Solar Scheduling
@@ -88,19 +110,31 @@ Execute workflows/webhooks based on solar events:
 - **Solar Events**: sunrise, sunset, civil_dawn, civil_dusk, nautical_dawn, nautical_dusk, astronomical_dawn, astronomical_dusk
 - **Latitude/Longitude**: Geographic coordinates for accurate calculations
 - **Offset Seconds**: Optional offset to adjust timing
+- **Is One-Off Task**: Set to `true` for one-time execution, `false` for recurring
 
 **Use Cases:**
 - Outdoor lighting control
 - Solar panel management
 - Weather-dependent operations
 - Location-based automation
+- One-time solar event triggers
 
-**Example:**
+**Example (Recurring):**
 ```
 Solar Event: sunrise
 Latitude: 40.7128
 Longitude: -74.0060
 Offset: +1800 seconds (30 minutes after sunrise)
+Is One-Off Task: false
+```
+
+**Example (One-Time):**
+```
+Solar Event: sunset
+Latitude: 40.7128
+Longitude: -74.0060
+Offset: 0 seconds
+Is One-Off Task: true
 ```
 
 ### 5. Debounce Scheduling
@@ -231,9 +265,9 @@ HookPulse scheduling comes with:
 ✅ **Flexible Rule Engine**: Time windows, calendar windows, exclusions, terminations  
 ✅ **Timezone Support**: Full IANA timezone support for accurate scheduling  
 ✅ **Solar Calculations**: Accurate solar event calculations based on coordinates  
-✅ **One-Off Tasks**: Support for single-execution schedules  
+✅ **One-Off Tasks**: Support for single-execution schedules (via `is_one_off_task` for interval/cron/solar, automatic for clocked)  
 ✅ **Status Management**: Active, inactive, paused, completed, expired states  
-✅ **Template Variables**: Dynamic content in scheduled workflows  
+✅ **Template Variables**: Dynamic content in scheduled workflows via `initial_context_template`  
 ✅ **Debounce Logic**: Prevent rapid-fire executions  
 ✅ **Automatic Calculations**: Next run times calculated automatically  
 
@@ -283,7 +317,16 @@ Timezone: America/New_York
 Schedule Type: Clocked
 Clocked Run At: 2024-12-25 02:00:00
 Timezone: UTC
-Status: One-off task
+Status: Automatically one-off (no is_one_off_task field needed)
+```
+
+### One-Time Recurring Schedule (Interval)
+
+```
+Schedule Type: Interval
+Interval: 5 minutes
+Is One-Off Task: true
+Status: Executes once after 5 minutes, then completes
 ```
 
 ## Best Practices

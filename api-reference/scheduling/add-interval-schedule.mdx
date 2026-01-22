@@ -24,9 +24,10 @@ curl -X POST "https://api.hookpulse.io/v1/api/add_interval_schedule/" \
   -H "Content-Type: application/json" \
   -d '{
     "interval_value": 5,
+    "is_one_off_task": false,
     "interval_period": "second",
     "schedule_to": "webhook",
-    "model_to_schedule_uuid": "{{webhook_uuid}}",
+    "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
     "initial_context_template": {
       "key": "value"
     }
@@ -43,9 +44,10 @@ const response = await fetch('https://api.hookpulse.io/v1/api/add_interval_sched
   },
   body: JSON.stringify({
     interval_value: 5,
+    is_one_off_task: false,
     interval_period: 'second',
     schedule_to: 'webhook',
-    model_to_schedule_uuid: '{{webhook_uuid}}',
+    model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
     initial_context_template: {
       key: 'value'
     }
@@ -67,9 +69,10 @@ headers = {
 }
 payload = {
     'interval_value': 5,
+    'is_one_off_task': False,
     'interval_period': 'second',
     'schedule_to': 'webhook',
-    'model_to_schedule_uuid': '{{webhook_uuid}}',
+    'model_to_schedule_uuid': '{{model_to_schedule_uuid}}',
     'initial_context_template': {
         'key': 'value'
     }
@@ -94,9 +97,10 @@ request['x-brand-uuid'] = '{{x-brand-uuid}}'
 request['Content-Type'] = 'application/json'
 request.body = {
   interval_value: 5,
+  is_one_off_task: false,
   interval_period: 'second',
   schedule_to: 'webhook',
-  model_to_schedule_uuid: '{{webhook_uuid}}',
+  model_to_schedule_uuid: '{{model_to_schedule_uuid}}',
   initial_context_template: {
     key: 'value'
   }
@@ -112,9 +116,10 @@ puts JSON.parse(response.body)
 $url = "https://api.hookpulse.io/v1/api/add_interval_schedule/";
 $data = [
     'interval_value' => 5,
+    'is_one_off_task' => false,
     'interval_period' => 'second',
     'schedule_to' => 'webhook',
-    'model_to_schedule_uuid' => '{{webhook_uuid}}',
+    'model_to_schedule_uuid' => '{{model_to_schedule_uuid}}',
     'initial_context_template' => [
         'key' => 'value'
     ]
@@ -144,9 +149,10 @@ echo $response;
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `interval_value` | integer | Yes | Number of time units between executions (must be > 0) |
+| `is_one_off_task` | boolean | Yes | Set to `true` if the schedule should run only once, `false` for recurring execution |
 | `interval_period` | string | Yes | Unit of time: `"second"`, `"minute"`, or `"hour"` |
 | `schedule_to` | string | Yes | Target type: `"webhook"` or `"workflow"` |
-| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule |
+| `model_to_schedule_uuid` | string | Yes | UUID of the webhook or workflow template to schedule (as per `schedule_to`) |
 | `initial_context_template` | object | No | Key-value pairs passed as `{{ initial.key }}` variables to the webhook/workflow |
 
 ## Example response
@@ -198,37 +204,51 @@ You can also combine with:
 
 ## Examples
 
-### Every 30 seconds
+### Every 30 seconds (recurring)
 ```json
 {
   "interval_value": 30,
+  "is_one_off_task": false,
   "interval_period": "second",
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
-### Every 15 minutes
+### Every 15 minutes (recurring)
 ```json
 {
   "interval_value": 15,
+  "is_one_off_task": false,
   "interval_period": "minute",
   "schedule_to": "webhook",
-  "model_to_schedule_uuid": "{{webhook_uuid}}"
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
-### Every 2 hours with initial context
+### Every 2 hours with initial context (recurring)
 ```json
 {
   "interval_value": 2,
+  "is_one_off_task": false,
   "interval_period": "hour",
   "schedule_to": "workflow",
-  "model_to_schedule_uuid": "{{workflow_uuid}}",
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}",
   "initial_context_template": {
     "report_type": "hourly",
     "timezone": "UTC"
   }
+}
+```
+
+### One-time execution after 5 minutes
+```json
+{
+  "interval_value": 5,
+  "is_one_off_task": true,
+  "interval_period": "minute",
+  "schedule_to": "webhook",
+  "model_to_schedule_uuid": "{{model_to_schedule_uuid}}"
 }
 ```
 
